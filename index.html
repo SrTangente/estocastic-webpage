@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>esτocasτic</title>
+<meta name="description" content="esτocasτic — Let waveforms collapse. SoundCloud i Instagram.">
+<meta name="theme-color" content="#0a0a0d">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="esτocasτic">
+<meta property="og:description" content="Let waveforms collapse">
+<meta property="og:url" content="https://estocastic.xyz/">
+<meta property="og:image" content="https://estocastic.xyz/symbol.png">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#0a0a0d;
+    --surface:#141419;
+    --line:#2a2a33;
+    --text:#f1ede6;
+    --muted:#8b8b97;
+    --yang:#e8b04b;
+    --yin:#8b93ff;
+    --display:"Syne","Trebuchet MS",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{
+    background:
+      radial-gradient(120% 80% at 12% -5%, rgba(232,176,75,.10), transparent 55%),
+      radial-gradient(120% 90% at 88% 105%, rgba(139,147,255,.12), transparent 55%),
+      var(--ground);
+    background-attachment:fixed;
+    color:var(--text);
+    font-family:var(--mono);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding-inline:22px;
+  }
+  .wrap{
+    width:100%;
+    max-width:460px;
+    padding-block:56px 44px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:38px;
+  }
+  header{display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px}
+  .mark{
+    width:clamp(150px,44vw,210px);height:auto;display:block;
+    filter:drop-shadow(0 8px 30px rgba(139,147,255,.30)) drop-shadow(0 3px 16px rgba(232,176,75,.16));
+  }
+  h1{margin:0;line-height:0}
+  .logo{width:clamp(230px,70vw,320px);height:auto;display:block;filter:drop-shadow(0 4px 18px rgba(0,0,0,.45))}
+
+  .links{display:flex;flex-direction:column;gap:12px}
+  .link{
+    display:flex;align-items:center;gap:14px;
+    padding:16px 18px;border-radius:14px;
+    background:var(--surface);border:1px solid var(--line);
+    text-decoration:none;color:var(--text);
+    font-size:14px;letter-spacing:.02em;
+    transition:border-color .18s ease,transform .18s ease;
+  }
+  .link:hover{border-color:var(--muted);transform:translateY(-2px)}
+  .link:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+  .link svg{width:20px;height:20px;flex:none;color:var(--muted)}
+  .link .lbl{flex:1}
+  .link .host{font-size:11px;color:var(--muted)}
+
+  footer{text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px}
+  .slogan{font-family:var(--display);font-style:italic;font-size:14px;letter-spacing:.02em;opacity:.9}
+  .handle{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="mark" src="symbol.png" alt="Símbol d'esτocasτic">
+    <h1><img class="logo" src="logo.png" alt="esτocasτic"></h1>
+  </header>
+
+  <nav class="links" aria-label="Enllaços">
+    <a class="link" href="https://soundcloud.com/estocastic" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M1.5 15.5a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 1 0v3a.5.5 0 0 1-.5.5Zm2-4a.5.5 0 0 0-.5.5v3.5a.5.5 0 0 0 1 0V12a.5.5 0 0 0-.5-.5Zm2-1a.5.5 0 0 0-.5.5v4.5a.5.5 0 0 0 1 0V11a.5.5 0 0 0-.5-.5Zm2-1.2a.5.5 0 0 0-.5.5v5.7a.5.5 0 0 0 1 0V9.8a.5.5 0 0 0-.5-.5Zm2 .4a.5.5 0 0 0-.5.5v5.3a.5.5 0 0 0 1 0V10.2a.5.5 0 0 0-.5-.5Zm12.9 1.3A3.6 3.6 0 0 0 14 8.3a4.7 4.7 0 0 0-2.4.7.5.5 0 0 0-.2.4v6a.5.5 0 0 0 .5.5h7.3a2.8 2.8 0 0 0 .4-5.5Z"/></svg>
+      <span class="lbl">SoundCloud</span>
+      <span class="host">soundcloud.com/estocastic</span>
+    </a>
+    <a class="link" href="https://www.instagram.com/estocastic_/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg>
+      <span class="lbl">Instagram</span>
+      <span class="host">@estocastic_</span>
+    </a>
+  </nav>
+
+  <footer>
+    <span class="slogan">Let waveforms collapse</span>
+    <span class="handle">@estocastic_</span>
+  </footer>
+</div>
+</body>
+</html>
