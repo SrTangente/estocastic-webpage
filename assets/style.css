@@ -223,3 +223,55 @@ img{display:block;max-width:100%}
 .lk.primary{background:var(--text);border-color:var(--text);color:var(--ground)}
 .lk.primary .s{color:#4a4a55}
 .lk.primary:hover{background:#fff}
+
+/* ---- líneas rectas / hoja técnica ---- */
+body::before{
+  --gx:max(10px,calc(50% - 560px));
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(var(--line),var(--line)) var(--gx) 0/1px 100% no-repeat,
+    linear-gradient(var(--line),var(--line)) calc(100% - var(--gx)) 0/1px 100% no-repeat;
+}
+.wrap,.bar,.foot{position:relative;z-index:1}
+/* regla con marcas bajo la barra superior y sobre el pie */
+.bar{border-bottom:0}
+.bar::after,.foot::before{
+  content:"";position:absolute;left:0;right:0;height:9px;pointer-events:none;
+  background:
+    linear-gradient(var(--line-2),var(--line-2)) 0 0/100% 1px no-repeat,
+    repeating-linear-gradient(90deg,var(--line-2) 0 1px,transparent 1px 12px) 0 0/100% 4px no-repeat,
+    repeating-linear-gradient(90deg,var(--muted) 0 1px,transparent 1px 60px) 0 0/100% 9px no-repeat;
+}
+.bar::after{bottom:0}
+.foot{border-top:0}
+.foot::before{top:0}
+/* cabecera de página */
+.page-head{position:relative}
+.strip{display:flex;justify-content:space-between;gap:12px;padding-bottom:10px;margin-bottom:8px;border-bottom:1px solid var(--line);font-size:9px;letter-spacing:.22em;color:var(--muted)}
+.strip span:nth-child(3){opacity:.7}
+@media(max-width:620px){.strip .hide-s{display:none}}
+.page-head::before{
+  content:"";position:absolute;left:-5px;top:-5px;width:11px;height:11px;pointer-events:none;
+  background:linear-gradient(var(--muted),var(--muted)) center/100% 1px no-repeat,linear-gradient(var(--muted),var(--muted)) center/1px 100% no-repeat;
+}
+.page-head h1::before{content:"";display:inline-block;width:.14em;height:.78em;margin-right:.22em;background:var(--acc,var(--yin));vertical-align:-.02em}
+/* secciones numeradas con línea completa */
+main{counter-reset:s}
+.sec-h{position:relative;border-bottom:0;padding-bottom:12px}
+.sec-h::before{counter-increment:s;content:counter(s,decimal-leading-zero) " /  ";color:var(--text)}
+.sec-h::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:7px;
+  background:
+    linear-gradient(var(--line-2),var(--line-2)) 0 100%/100% 1px no-repeat,
+    repeating-linear-gradient(90deg,var(--line-2) 0 1px,transparent 1px 10px) 0 100%/100% 5px no-repeat;
+}
+/* leyendas con línea fina arriba */
+.card .cap,.acard .cap,.rel .cap,.vid .cap{border-top:1px solid var(--line);padding-top:9px;margin-top:-1px}
+/* códigos de barras decorativo */
+.barcode{width:94px;height:22px;color:var(--muted);opacity:.8;margin-bottom:6px}
+/* bloques de texto con regla vertical */
+.prose p,.page-head p{border-left:1px solid var(--line-2);padding-left:14px}
+.page-head p{margin-left:0}
+/* linktree: reglas entre botones */
+.lklist .lk{position:relative}
+.lklist .lk::before{content:"";position:absolute;left:-10px;top:50%;width:6px;height:1px;background:var(--muted)}

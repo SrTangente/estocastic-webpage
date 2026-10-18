@@ -147,13 +147,25 @@ def topbar(L, rel, section=None):
 
 def footer():
     return f'''<div class="wrap"><footer class="foot">
-<span class="slogan">Let waveforms collapse</span>
+{barcode()}<span class="slogan">Let waveforms collapse</span>
 <span class="micro">@estocastic_ · <a href="mailto:{SITE['contact']}">{SITE['contact']}</a></span>
 <span class="micro">BCN · 41.39 N / 2.17 E · REF EST—2026</span></footer></div>'''
 
-def head(kicker, title, intro="", extra=""):
+SEC_ACC = {"label": "yin", "about": "text", "shop": "yang", "agency": "yin", "community": "yang"}
+def strip(sec):
+    i = SECTIONS.index(sec) + 1
+    return (f'<div class="strip" aria-hidden="true"><span>EST—2026</span><span>{sec.upper()}/{i:02d}</span>'
+            f'<span class="hide-s">{sec[:2].upper()}{100 + i * 7} · 0.{16 + i * 3}</span><span>41.39 N · 2.17 E</span></div>')
+
+def head(kicker, title, intro="", extra="", sec=""):
     p = f"<p>{intro}</p>" if intro else ""
-    return f'<header class="page-head"><span class="micro">{kicker}</span><h1>{title}</h1>{p}{extra}</header>'
+    st = strip(sec) if sec else ""
+    acc = f' style="--acc:var(--{SEC_ACC[sec]})"' if sec else ""
+    return f'<header class="page-head"{acc}>{st}<span class="micro">{kicker}</span><h1>{title}</h1>{p}{extra}</header>'
+
+BARCODE = "".join(f'<rect x="{x}" y="0" width="{w}" height="22"/>' for x, w in
+                  [(0,2),(4,1),(7,3),(12,1),(15,2),(19,1),(22,3),(27,1),(30,2),(34,1),(37,1),(40,3),(45,2),(49,1),(52,2),(56,1),(59,3),(64,1),(67,2),(71,1),(74,2),(78,3),(83,1),(86,2),(90,1),(93,1)])
+def barcode(): return f'<svg class="barcode" viewBox="0 0 94 22" aria-hidden="true" fill="currentColor">{BARCODE}</svg>'
 
 def gate(L, ex):
     t = T[L]
@@ -223,7 +235,7 @@ def community_page(L, public, counts, ex, fiestas):
         wall = f'<section class="sec"><h2 class="sec-h">{t["fiestas_h"]}</h2><div class="wall">' + "".join(
             f'<img src="{u}" alt="{t["fiestas_alt"]}" loading="lazy">' for u in fiestas) + "</div></section>"
     body = f'''{topbar(L, "/community/", "community")}<main class="wrap">
-{head(t['community_kicker'], "Community", esc(t['community_intro'].format(c=SITE['contact'])))}
+{head(t['community_kicker'], "Community", esc(t['community_intro'].format(c=SITE['contact'])), sec="community")}
 <section class="sec"><h2 class="sec-h">{t['photos_h']}</h2><div class="cards" aria-label="{t['events']}">{cards}</div></section>
 {wall}{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}'''
     return page(L, "Community · esτocasτic", t["community_desc"], body, "/community/")
@@ -245,7 +257,7 @@ def label_page(L, covers, radio):
         + f'<span class="play">▶</span></div><div class="cap"><span>{esc(x["title"])}</span><span>pnc radio ↗</span></div></a>'
         for x in CONTENT.get("radio", []))
     body = f'''{topbar(L, "/label/", "label")}<main class="wrap">
-{head(t['label_kicker'], "Label", t['label_intro'])}
+{head(t['label_kicker'], "Label", t['label_intro'], sec="label")}
 <section class="sec"><h2 class="sec-h">{t['mixes_h']}</h2><div class="rels">{items}</div></section>
 {f'<section class="sec"><h2 class="sec-h">{t["radio_h"]}</h2><div class="vids">{rad}</div></section>' if rad else ""}
 </main>{footer()}'''
@@ -257,7 +269,7 @@ def about_page(L, group):
     man = "".join(f"<p>{esc(x)}</p>" for x in (a.get("manifesto_en") if L == "en" else a.get("manifesto", [])))
     img = f'<figure class="group brk"><img src="{group}" alt="esτocasτic &amp; friends" loading="lazy"></figure>' if group else ""
     body = f'''{topbar(L, "/about/", "about")}<main class="wrap">
-{head(t['about_kicker'], "About")}
+{head(t['about_kicker'], "About", sec="about")}
 <section class="defn brk"><b>{esc(a.get("term",""))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></section>
 <section class="sec prose"><h2 class="sec-h">{t['manifesto_h']}</h2>{man}</section>
 {img}
@@ -273,7 +285,7 @@ def shop_page(L):
     cta = (f'<a class="btn solid" style="--acc:var(--yang)" href="{pre(L)}/community/#gate">{t["shop_cta"]}</a>' if SHOW_GATE
            else '<a class="btn solid" style="--acc:var(--yang)" href="https://www.instagram.com/estocastic_/" target="_blank" rel="noopener">@estocastic_ ↗</a>')
     body = f'''{topbar(L, "/shop/", "shop")}<main class="wrap">
-{head(t['shop_kicker'], "Shop")}
+{head(t['shop_kicker'], "Shop", sec="shop")}
 <section class="soon-box brk"><span class="chip"></span><h2>{t['shop_h']}</h2><p>{t['shop_text']}</p>
 {cta}</section>
 </main>{footer()}'''
@@ -316,7 +328,7 @@ def agency_page(L, photos):
     t = T[L]
     roster = "".join(artist_card(L, a, photos[a["slug"]]) for a in ARTISTS)
     body = f'''{topbar(L, "/agency/", "agency")}<main class="wrap">
-{head(t['agency_kicker'], "Agency", esc(t['agency_intro'].format(c=SITE['contact'])))}
+{head(t['agency_kicker'], "Agency", esc(t['agency_intro'].format(c=SITE['contact'])), sec="agency")}
 <section class="roster" aria-label="Agency">{roster}</section></main>{footer()}'''
     return page(L, "Agency · esτocasτic", t["agency_desc"], body, "/agency/")
 
