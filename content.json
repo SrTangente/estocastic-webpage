@@ -1,0 +1,55 @@
+{
+  "about": {
+    "term": "ESTOCÁSTICO, CA",
+    "etym": "Del gr. στοχαστικός stochastikós 'conjetural'.",
+    "etym_en": "From Gr. στοχαστικός stochastikós 'conjectural'.",
+    "def": "Sistema cuyo comportamiento intrínseco es no determinista.",
+    "def_en": "A system whose intrinsic behavior is non-deterministic.",
+    "manifesto": [
+      "Estocastic busca reflejar este comportamiento en la música: melodías que evolucionan hacia horizontes inexplorados y cambios inesperados, transformando de un momento a otro la energía de la pista. Nuestro objetivo es que el oyente se conecte con su entorno de manera libre, sin expectativas, dejándose llevar por las distintas frecuencias.",
+      "Creemos en el poder de la música para elevar el espíritu y profundizar en uno mismo. Cada sonido es una posibilidad de conexión, cada silencio una oportunidad para la introspección y cada transición una puerta a nuevas experiencias. Nuestra intención es generar un espacio-tiempo que conecte conciencias mediante el baile y la escucha activa, un oasis de seguridad para cualquier persona que quiera conectar consigo misma y con los demás mediante la música electrónica."
+    ],
+    "manifesto_en": [
+      "Estocastic seeks to reflect this behavior in music: melodies that evolve toward unexplored horizons and unexpected shifts, transforming the energy of the dancefloor from one moment to the next. Our aim is for the listener to connect with their surroundings freely, without expectations, letting themselves be carried by the different frequencies.",
+      "We believe in the power of music to lift the spirit and go deeper into oneself. Every sound is a possibility of connection, every silence an opportunity for introspection and every transition a door to new experiences. Our intention is to create a space-time that connects consciousnesses through dance and active listening, a safe oasis for anyone who wants to connect with themselves and with others through electronic music."
+    ],
+    "parties": "Estocastic es un colectivo con especial influencia en Barcelona, Valencia y Madrid. Siroco es la sala donde más veces se ha asentado durante la temporada 2025/2026.",
+    "parties_en": "Estocastic is a collective with a particular footprint in Barcelona, Valencia and Madrid. Siroco is the venue where it has settled most often during the 2025/2026 season."
+  },
+  "radio": [
+    {
+      "title": "Ginsengboy",
+      "thumb": "ginsengboy",
+      "url": "https://www.youtube.com/watch?v=eP6e7S_0Pqk&t=2109s"
+    },
+    {
+      "title": "KLIM",
+      "thumb": "klim",
+      "url": "https://www.youtube.com/watch?v=7WY2OtSnhl0&t=4659s"
+    },
+    {
+      "title": "E5g0000",
+      "thumb": "e5g0000",
+      "url": "https://www.youtube.com/watch?v=f64m-Qp1eGI&t=49s"
+    },
+    {
+      "title": "Memory Palace",
+      "thumb": "memory-palace",
+      "url": "https://www.youtube.com/watch?v=G-vCaF6pW68&t=1917s"
+    },
+    {
+      "title": "ONA",
+      "thumb": "ona",
+      "url": "https://www.youtube.com/watch?v=4Tw7Dua-rHo&t=2658s"
+    }
+  ],
+  "fiestas": [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07"
+  ]
+}

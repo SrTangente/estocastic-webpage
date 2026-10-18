@@ -1,0 +1,60 @@
+[
+  {
+    "slug": "akagat",
+    "name": "Akagat",
+    "role": "Live sets · Dirección de arte",
+    "role_en": "Live sets · Art direction",
+    "bio": "Nacido en Barcelona, Akagat es el alias de Albert Planas. Artista New Media, ex docente e investigador de la universidad y músico-productor. Ha desarrollado una sensibilidad a la creatividad gracias a sus múltiples facetas artísticas, desde la costura hasta la pintura y los píxeles.\n\nAunque su función primaria sigue siendo la Dirección de Arte, rápidamente está ganando terreno en el ámbito musical, con live sets y visuales audiorreactivos en directo.",
+    "bio_en": "Born in Barcelona, Akagat is the alias of Albert Planas. New Media artist, former university lecturer and researcher, and music producer. His sense of creativity has grown out of many artistic facets, from sewing and painting to pixels.\n\nAlthough his main role remains Art Direction, he is quickly gaining ground in music, with live sets and live audio-reactive visuals.",
+    "links": {}
+  },
+  {
+    "slug": "klim",
+    "name": "KLIM",
+    "role": "DJ · Productor",
+    "role_en": "DJ · Producer",
+    "bio": "Nacido y criado en Girona en una familia de músicos, Climent, conocido como KLIM, es un artista radicado en Barcelona. Creció rodeado de equipos de audio, pasando todo su tiempo libre en el estudio de su padre, y eventualmente aprendió por sí mismo a ser DJ y productor.\n\nKLIM está involucrado en grandes fiestas de Barcelona como No tags, 01366 o 98.3fm. También realiza streamings de categoría como los de AeAe y su mensualidad en Hong Kong Community Radio y PNC, el colectivo London–Manchester–BCN 01366.",
+    "bio_en": "Born and raised in Girona in a family of musicians, Climent, known as KLIM, is an artist based in Barcelona. He grew up surrounded by audio gear, spending all his free time in his father's studio, and eventually taught himself to DJ and produce.\n\nKLIM is involved in big Barcelona parties such as No tags, 01366 and 98.3fm. He also plays top-tier streams such as those for AeAe, plus a monthly show on Hong Kong Community Radio and PNC, the London–Manchester–BCN collective 01366.",
+    "links": {},
+    "links_extra": [
+      {
+        "label": "Mix esτocasτic",
+        "url": "https://soundcloud.com/estocastic/klim"
+      },
+      {
+        "label": "PNC Radio",
+        "url": "https://www.youtube.com/watch?v=7WY2OtSnhl0&t=4659s"
+      }
+    ]
+  },
+  {
+    "slug": "neopreno",
+    "name": "Neøpreno",
+    "role": "DJ · Proyecto musical",
+    "role_en": "DJ · Music project",
+    "bio": "Neøpreno es el proyecto musical de Juangui, criado en Madrid pero con orígenes en Colombia. A través de este alias pretende explorar todo tipo de géneros sin fronteras, pintando atmósferas con sonidos y ritmos de la diáspora, incluyendo en ocasiones elementos latinos o tribales profundos.\n\nDesde 2023 posee su propio espacio artístico multidisciplinar en Viveiro, Lugo, conocido como «Chil na praia», donde colabora con DJs y artistas para generar una experiencia que permita a los asistentes conectar con la naturaleza del entorno y romper su cadena de pensamientos.",
+    "bio_en": "Neøpreno is the music project of Juangui, raised in Madrid with roots in Colombia. Through this alias he sets out to explore every kind of genre without borders, painting atmospheres with the sounds and rhythms of the diaspora, at times including Latin or deep tribal elements.\n\nSince 2023 he has run his own multidisciplinary art space in Viveiro, Lugo, known as \"Chil na praia\", where he works with DJs and artists to create an experience that lets attendees connect with the nature around them and break their chain of thoughts.",
+    "links": {},
+    "links_extra": [
+      {
+        "label": "Mix esτocasτic",
+        "url": "https://on.soundcloud.com/AO11TkAb5CUGDam8Wa"
+      }
+    ]
+  },
+  {
+    "slug": "tangente",
+    "name": "Tangente",
+    "role": "DJ",
+    "role_en": "DJ",
+    "bio": "José Juan, a.k.a. Tangente, es un DJ criado en tierras sevillanas y afincado en Barcelona. Sus sets parten del bass como núcleo, sobre el que orbitan el IDM, el trance escandinavo, el druidstep francés y una pizca de jungle, en ritmos rotos que colapsan y se expanden a la vez.\n\nUn sonido en constante superposición de estados que nunca pierde el hilo con sus raíces: la escena rave de la Barcelona pandémica, trasladada a la pista a través de graves masivos y bpms relativistas que arrastran los cuerpos al baile.",
+    "bio_en": "José Juan, a.k.a. Tangente, is a DJ raised in the lands of Seville and based in Barcelona. His sets start from bass as a core, around which IDM, Scandinavian trance, French druidstep and a pinch of jungle orbit, in broken rhythms that collapse and expand at once.\n\nA sound in constant superposition of states that never loses the thread of its roots: the rave scene of pandemic Barcelona, carried onto the dancefloor through massive lows and relativistic BPMs that drag bodies into dancing.",
+    "links": {},
+    "links_extra": [
+      {
+        "label": "Mix esτocasτic",
+        "url": "https://on.soundcloud.com/YxM1zrWRFBZh5351ap"
+      }
+    ]
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "yin-gathering",
+    "title": "Yin Gathering",
+    "date": "2026-09-20",
+    "date_label": "20 sep 2026",
+    "date_label_en": "20 Sep 2026",
+    "venue": "Casa Androna, Gràcia",
+    "time": "16:00–22:00",
+    "lineup": "Avsluta · Myrcene · Akagat · Neøpreno",
+    "accent": "yin",
+    "photographer": ""
+  },
+  {
+    "slug": "yang-alchemy",
+    "title": "Yang Alchemy",
+    "date": "2026-09-19",
+    "date_label": "19 sep 2026",
+    "date_label_en": "19 Sep 2026",
+    "venue": "Localización secreta, BCN",
+    "venue_en": "Secret location, BCN",
+    "time": "23:59–08:00",
+    "lineup": "KLIM · colell · ONA · Tangente",
+    "accent": "yang",
+    "photographer": ""
+  },
+  {
+    "slug": "analog-rolls",
+    "title": "Rollos analógicos",
+    "title_en": "Analog rolls",
+    "date": "2026-09-20",
+    "date_label": "Selección analógica",
+    "date_label_en": "Analog selection",
+    "venue": "Yin Gathering / Yang Alchemy",
+    "venue_en": "Yin Gathering / Yang Alchemy",
+    "time": "35 mm",
+    "lineup": "",
+    "accent": "yang",
+    "exclusive": true,
+    "photographer": ""
+  }
+]
