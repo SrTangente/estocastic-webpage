@@ -23,6 +23,7 @@ def load(name, default):
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else default
 SITE, EVENTS = load("site.json", {}), load("events.json", [])
 ARTISTS, RELEASES, CONTENT = load("artists.json", []), load("releases.json", []), load("content.json", {})
+LINKS = load("links.json", [])
 SRC = ROOT / "source"
 SHOW_GATE = bool(SITE.get("endpoint")) or "--with-gate" in sys.argv  # sin endpoint no se muestra el formulario
 EXTS = {".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff"}
@@ -331,6 +332,28 @@ def home_page(L, counts):
 <nav class="index brk" aria-label="{t['links']}">{nav}</nav></main>{footer()}'''
     return page(L, "esτocasτic", t["home_desc"], body, "/")
 
+# ---------- LINKS (enlace de bio, estilo linktree) ----------
+def links_page(L):
+    t = T[L]; rows = ""
+    for x in LINKS:
+        url = x["url"].replace("{contact}", SITE["contact"])
+        local = url.startswith("/")
+        href = (pre(L) + url) if local else url
+        ext = "" if (local or url.startswith("mailto:")) else ' target="_blank" rel="noopener"'
+        label = x.get("label_en", x["label"]) if L == "en" else x["label"]
+        sub = x.get("sub_en", x.get("sub", "")) if L == "en" else x.get("sub", "")
+        arrow = "→" if local else "↗"
+        cls = "lk primary" if x.get("primary") else "lk"
+        tag = f'<span class="tag">{esc(x["tag"])}</span>' if x.get("tag") else ""
+        rows += f'<a class="{cls}" href="{esc(href)}"{ext}><span class="l">{esc(label)}{tag}</span><span class="s">{esc(sub.replace("{contact}", SITE["contact"]))} {arrow}</span></a>'
+    sw = "".join(f'<a href="{pre(l)}/links/" hreflang="{l}" lang="{l}"{" aria-current=\"true\"" if l == L else ""}>{l.upper()}</a>' for l in LANGS)
+    body = f'''<main class="wrap narrow lkpage">
+<div class="lklang"><span class="lang">{sw}</span></div>
+<header class="hero"><img class="mark" src="/symbol.png" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
+<nav class="lklist" aria-label="{t['links']}">{rows}</nav>
+<footer class="foot"><span class="slogan">Let waveforms collapse</span><span class="micro">@estocastic_</span></footer></main>'''
+    return page(L, "esτocasτic · Links", t["home_desc"], body, "/links/")
+
 # ---------- main ----------
 def main():
     if SITE.get("secret") in (None, "", "CHANGE_ME"): sys.exit("site.json: falta 'secret'")
@@ -351,6 +374,7 @@ def main():
         ensure(ROOT / (pre(L).strip("/") or ".") / rel.strip("/") / "index.html").write_text(content, encoding="utf-8")
     for L in LANGS:
         write(L, "", home_page(L, counts))
+        write(L, "links", links_page(L))
         write(L, "label", label_page(L, covers, radio))
         write(L, "about", about_page(L, group))
         write(L, "shop", shop_page(L))

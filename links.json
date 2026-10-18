@@ -1,0 +1,7 @@
+[
+  {"label": "Web", "label_en": "Website", "url": "/", "sub": "estocastic.xyz", "primary": true},
+  {"label": "Label · Mixes", "url": "/label/", "sub": "Mixes · Radio"},
+  {"label": "SoundCloud", "url": "https://soundcloud.com/estocastic", "sub": "estocastic"},
+  {"label": "Instagram", "url": "https://www.instagram.com/estocastic_/", "sub": "@estocastic_"},
+  {"label": "Contacto", "label_en": "Contact", "url": "mailto:{contact}", "sub": "{contact}"}
+]

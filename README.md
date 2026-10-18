@@ -10,3 +10,5 @@ Secciones: LABEL · ABOUT · SHOP · AGENCY · COMMUNITY.
 - **Release nueva:** entrada en `releases.json` + portada en `source/releases/`.
 - **Formulario:** `site.json` → `endpoint` = URL de Apps Script (`apps_script_correos.gs`).
 - Fotos de suscriptores: `/s/<secret>/` (noindex, sin enlace público).
+
+- **Enlace de bio (estilo linktree):** `/links/` (ES) y `/en/links/` (EN), editable en `links.json`. Para una fiesta nueva añade un bloque con `"tag": "NEW"` y el enlace de entradas.
