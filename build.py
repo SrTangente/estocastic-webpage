@@ -346,13 +346,13 @@ def links_page(L):
         cls = "lk primary" if x.get("primary") else "lk"
         tag = f'<span class="tag">{esc(x["tag"])}</span>' if x.get("tag") else ""
         rows += f'<a class="{cls}" href="{esc(href)}"{ext}><span class="l">{esc(label)}{tag}</span><span class="s">{esc(sub.replace("{contact}", SITE["contact"]))} {arrow}</span></a>'
-    sw = "".join(f'<a href="{pre(l)}/links/" hreflang="{l}" lang="{l}"{" aria-current=\"true\"" if l == L else ""}>{l.upper()}</a>' for l in LANGS)
+    sw = "".join(f'<a href="{pre(l)}/linktree/" hreflang="{l}" lang="{l}"{" aria-current=\"true\"" if l == L else ""}>{l.upper()}</a>' for l in LANGS)
     body = f'''<main class="wrap narrow lkpage">
 <div class="lklang"><span class="lang">{sw}</span></div>
 <header class="hero"><img class="mark" src="/symbol.png" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
 <nav class="lklist" aria-label="{t['links']}">{rows}</nav>
 <footer class="foot"><span class="slogan">Let waveforms collapse</span><span class="micro">@estocastic_</span></footer></main>'''
-    return page(L, "esτocasτic · Links", t["home_desc"], body, "/links/")
+    return page(L, "esτocasτic · Links", t["home_desc"], body, "/linktree/")
 
 # ---------- main ----------
 def main():
@@ -374,7 +374,7 @@ def main():
         ensure(ROOT / (pre(L).strip("/") or ".") / rel.strip("/") / "index.html").write_text(content, encoding="utf-8")
     for L in LANGS:
         write(L, "", home_page(L, counts))
-        write(L, "links", links_page(L))
+        write(L, "linktree", links_page(L))
         write(L, "label", label_page(L, covers, radio))
         write(L, "about", about_page(L, group))
         write(L, "shop", shop_page(L))

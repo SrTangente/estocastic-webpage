@@ -11,4 +11,4 @@ Secciones: LABEL · ABOUT · SHOP · AGENCY · COMMUNITY.
 - **Formulario:** `site.json` → `endpoint` = URL de Apps Script (`apps_script_correos.gs`).
 - Fotos de suscriptores: `/s/<secret>/` (noindex, sin enlace público).
 
-- **Enlace de bio (estilo linktree):** `/links/` (ES) y `/en/links/` (EN), editable en `links.json`. Para una fiesta nueva añade un bloque con `"tag": "NEW"` y el enlace de entradas.
+- **Enlace de bio (estilo linktree):** `/linktree/` (ES) y `/en/linktree/` (EN), editable en `links.json`. Para una fiesta nueva añade un bloque con `"tag": "NEW"` y el enlace de entradas.
