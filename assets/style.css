@@ -277,3 +277,5 @@ main{counter-reset:s}
 .lklist .lk::before{content:"";position:absolute;left:-10px;top:50%;width:6px;height:1px;background:var(--muted)}
 .bar .items a.contact-link{color:var(--yang)}
 .bar .items a.contact-link::before{content:"✉ ";opacity:.8}
+.wrap.top{z-index:40}
+@media(max-width:900px){.bar nav{background:#0a0a0d;box-shadow:0 18px 40px rgba(0,0,0,.6)}}

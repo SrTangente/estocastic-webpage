@@ -1,6 +1,7 @@
 (function(){
   var mb=document.querySelector('.menu-btn'),mn=document.getElementById('menu');
   if(mb&&mn)mb.addEventListener('click',function(){var o=mn.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
+  if(mb&&mn){document.addEventListener('click',function(e){if(mn.classList.contains('open')&&!mn.contains(e.target)&&e.target!==mb){mn.classList.remove('open');mb.setAttribute('aria-expanded','false')}});document.addEventListener('keydown',function(e){if(e.key==='Escape'){mn.classList.remove('open');mb.setAttribute('aria-expanded','false')}})}
 
   var KEY='est_unlocked_v1';
   function get(){try{return localStorage.getItem(KEY)==='1'}catch(e){return false}}

@@ -140,7 +140,7 @@ def topbar(L, rel, section=None):
     t = T[L]
     items = "".join(f'<a href="{pre(L)}/{s}/"{" aria-current=\"page\"" if s == section else ""}>{s.upper()}</a>' for s in SECTIONS)
     sw = "".join(f'<a href="{pre(l)}{rel}" hreflang="{l}" lang="{l}"{" aria-current=\"true\"" if l == L else ""}>{l.upper()}</a>' for l in LANGS)
-    return f'''<div class="wrap"><div class="bar">
+    return f'''<div class="wrap top"><div class="bar">
 <a class="brand" href="{pre(L)}/" aria-label="esτocasτic"><img src="/logo.png" alt="esτocasτic"></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">{t['menu']}</button>
 <nav id="menu"><span class="items">{items}<a class="contact-link" href="mailto:{SITE['contact']}">{t['contact_h'].upper()}</a></span><span class="lang">{sw}</span></nav></div></div>'''
