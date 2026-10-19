@@ -275,3 +275,5 @@ main{counter-reset:s}
 /* linktree: reglas entre botones */
 .lklist .lk{position:relative}
 .lklist .lk::before{content:"";position:absolute;left:-10px;top:50%;width:6px;height:1px;background:var(--muted)}
+.bar .items a.contact-link{color:var(--yang)}
+.bar .items a.contact-link::before{content:"✉ ";opacity:.8}

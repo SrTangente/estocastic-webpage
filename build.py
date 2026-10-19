@@ -143,7 +143,7 @@ def topbar(L, rel, section=None):
     return f'''<div class="wrap"><div class="bar">
 <a class="brand" href="{pre(L)}/" aria-label="esτocasτic"><img src="/logo.png" alt="esτocasτic"></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">{t['menu']}</button>
-<nav id="menu"><span class="items">{items}</span><span class="lang">{sw}</span></nav></div></div>'''
+<nav id="menu"><span class="items">{items}<a class="contact-link" href="mailto:{SITE['contact']}">{t['contact_h'].upper()}</a></span><span class="lang">{sw}</span></nav></div></div>'''
 
 def footer():
     return f'''<div class="wrap"><footer class="foot">
@@ -272,10 +272,6 @@ def about_page(L, group):
 {head(t['about_kicker'], "About", sec="about")}
 <section class="defn brk"><b>{esc(a.get("term",""))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></section>
 <section class="sec prose"><h2 class="sec-h">{t['manifesto_h']}</h2>{man}</section>
-{img}
-<section class="sec prose"><h2 class="sec-h">{t['parties_h']}</h2><p>{esc(loc(a, "parties", L))}</p></section>
-<section class="sec prose"><h2 class="sec-h">{t['contact_h']}</h2>
-<p><a class="btn" href="mailto:{SITE['contact']}">{SITE['contact']}</a> <a class="btn" href="https://www.instagram.com/estocastic_/" target="_blank" rel="noopener">@estocastic_ ↗</a> <a class="btn" href="https://soundcloud.com/estocastic" target="_blank" rel="noopener">SoundCloud ↗</a></p></section>
 </main>{footer()}'''
     return page(L, "About · esτocasτic", t["about_desc"], body, "/about/", og_image="/symbol.png")
 
@@ -371,7 +367,7 @@ def main():
     if SITE.get("secret") in (None, "", "CHANGE_ME"): sys.exit("site.json: falta 'secret'")
     events = sorted(EVENTS, key=lambda e: e["date"], reverse=True)
     for e in events:
-        e["secret"] = SITE["secret"]; e["_poster"] = out_img("posters", e["slug"], 900, 82)
+        e["secret"] = SITE["secret"]; e["_poster"] = out_img("posters", e["slug"], 1400, 84)
     public = [e for e in events if not e.get("exclusive")]
     ex = next((e for e in events if e.get("exclusive")), None)
     photos = {e["slug"]: process_photos(e) for e in events}
