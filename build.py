@@ -244,7 +244,7 @@ def community_page(L, public, counts, ex, fiestas):
 def label_page(L, covers, radio):
     t = T[L]
     items = ""
-    for r in RELEASES:
+    for r in sorted(RELEASES, key=lambda r: r.get("date") or "", reverse=True):
         c = covers.get(r["id"])
         num = f'{r["series"].upper()} {r["num"]}'.strip() if r.get("num") else r["series"].upper()
         sub = f'{num}' + (f' · {r["date"][:4]}' if r.get("date") else "")

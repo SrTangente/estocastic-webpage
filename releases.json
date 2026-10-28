@@ -4,7 +4,7 @@
     "series": "esτocasτic presents",
     "num": "",
     "title": "Tangente",
-    "date": "",
+    "date": "2024-11-15",
     "url": "https://on.soundcloud.com/YxM1zrWRFBZh5351ap",
     "cover": "mix-tangente"
   },
@@ -13,7 +13,7 @@
     "series": "esτocasτic presents",
     "num": "",
     "title": "KLIM",
-    "date": "",
+    "date": "2024-12-30",
     "url": "https://soundcloud.com/estocastic/klim",
     "cover": "mix-klim"
   },
@@ -22,7 +22,7 @@
     "series": "esτocasτic presents",
     "num": "",
     "title": "Neøpreno",
-    "date": "",
+    "date": "2024-12-05",
     "url": "https://on.soundcloud.com/AO11TkAb5CUGDam8Wa",
     "cover": "mix-neopreno"
   },
@@ -76,7 +76,7 @@
     "series": "Elixir",
     "num": "09",
     "title": "Fluid Matter",
-    "date": "",
+    "date": "2026-02",
     "url": "https://soundcloud.com/estocastic/fluid-matter-for-estocastic",
     "cover": "elixir-09"
   },
@@ -85,8 +85,17 @@
     "series": "Elixir",
     "num": "10",
     "title": "Jony Maddkidz",
-    "date": "",
+    "date": "2026-06",
     "url": "https://soundcloud.com/estocastic/estocastic-1-hour-mix-jony",
     "cover": "elixir-10"
+  },
+  {
+    "id": "elixir-11",
+    "series": "Elixir",
+    "num": "11",
+    "title": "Tangente",
+    "date": "2026-10",
+    "url": "https://soundcloud.com/estocastic/estocastic_mix_011_tangente",
+    "cover": "elixir-11"
   }
 ]
