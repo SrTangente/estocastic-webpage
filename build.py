@@ -34,7 +34,7 @@ SECTIONS = ["label", "about", "shop", "agency", "events", "community"]
 
 T = {
  "es": dict(html="es", menu="Menú",
-   events_kicker="Eventos · Events — 05", events_intro="Los carteles de nuestras fiestas. Toca uno para ver las fotos.", events_desc="Carteles y fotos de las fiestas de esτocasτic.",
+   events_kicker="Eventos · Events — 05", events_intro="", events_desc="Carteles y fotos de las fiestas de esτocasτic.",
    community_kicker="Comunidad · Community — 06", community_intro="Las fotos y la gente que hace posibles nuestras fiestas.",
    community_desc="Fotos y vídeo de las fiestas de esτocasτic.", takedown="Si apareces en alguna foto y prefieres que la quitemos, escríbenos a {c}.", photos_h="Fotos", events_h="Eventos", fiestas_alt="Cartel de fiesta esτocasτic",
    label_kicker="Label — 01", label_intro="Nuestra serie de mixes y los streams de radio.", label_desc="Mixes y radio de esτocasτic.",
@@ -54,7 +54,7 @@ T = {
    symbol="Símbolo de esτocasτic", home_desc="esτocasτic — Let waveforms collapse. Label, About, Shop, Agency y Community.", home_sub_photos="Fotos de las fiestas",
    subs=dict(label="Mixes · Radio", about="Manifiesto", shop="Pronto", agency="Artistas", events="Carteles · Fiestas", community="Fotos · Vídeo")),
  "en": dict(html="en", menu="Menu",
-   events_kicker="Events · Eventos — 05", events_intro="The posters of our parties. Tap one to see the photos.", events_desc="esτocasτic party posters and photos.",
+   events_kicker="Events · Eventos — 05", events_intro="", events_desc="esτocasτic party posters and photos.",
    community_kicker="Community · Comunidad — 06", community_intro="The photos and the people who make our parties happen.",
    community_desc="Photos and video from esτocasτic parties.", takedown="If you appear in a photo and would rather we take it down, write to {c}.", photos_h="Photos", events_h="Events", fiestas_alt="esτocasτic party poster",
    label_kicker="Label — 01", label_intro="Our mix series and radio streams.", label_desc="esτocasτic mixes and radio.",
