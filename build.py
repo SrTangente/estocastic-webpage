@@ -35,7 +35,7 @@ SECTIONS = ["label", "about", "shop", "agency", "community"]
 T = {
  "es": dict(html="es", menu="Menú",
    community_kicker="Comunidad · Community — 05", community_intro="Los carteles de nuestras fiestas y la gente que las hace posibles.",
-   community_desc="Carteles de las fiestas de esτocasτic.", takedown="Si apareces en alguna foto y prefieres que la quitemos, escríbenos a {c}.", photos_h="Fotos", fiestas_h="Fiestas", fiestas_alt="Cartel de fiesta esτocasτic",
+   community_desc="Carteles de las fiestas de esτocasτic.", takedown="Si apareces en alguna foto y prefieres que la quitemos, escríbenos a {c}.", photos_h="Fotos", fiestas_h="Eventos", fiestas_alt="Cartel de fiesta esτocasτic",
    label_kicker="Label — 01", label_intro="Nuestra serie de mixes y los streams de radio.", label_desc="Mixes y radio de esτocasτic.",
    mixes_h="Mixes", radio_h="Radio", listen="Escuchar", watch="Ver",
    about_kicker="About — 02", about_desc="Manifiesto de esτocasτic.", manifesto_h="Manifiesto", parties_h="Fiestas", contact_h="Contacto",
@@ -54,7 +54,7 @@ T = {
    subs=dict(label="Mixes · Radio", about="Manifiesto", shop="Pronto", agency="Artistas", community="Carteles · Fiestas")),
  "en": dict(html="en", menu="Menu",
    community_kicker="Community · Comunidad — 05", community_intro="The posters of our parties and the people who make them happen.",
-   community_desc="esτocasτic party posters.", takedown="If you appear in a photo and would rather we take it down, write to {c}.", photos_h="Photos", fiestas_h="Parties", fiestas_alt="esτocasτic party poster",
+   community_desc="esτocasτic party posters.", takedown="If you appear in a photo and would rather we take it down, write to {c}.", photos_h="Photos", fiestas_h="Events", fiestas_alt="esτocasτic party poster",
    label_kicker="Label — 01", label_intro="Our mix series and radio streams.", label_desc="esτocasτic mixes and radio.",
    mixes_h="Mixes", radio_h="Radio", listen="Listen", watch="Watch",
    about_kicker="About — 02", about_desc="esτocasτic manifesto.", manifesto_h="Manifesto", parties_h="Parties", contact_h="Contact",
@@ -249,16 +249,18 @@ def community_page(L, public, counts, ex, fiestas, photos):
             cards += (f'<section class="sec evsec" style="--acc:{acc(e)}"><h2 class="sec-h"><span class="chip"></span>&nbsp; {esc(loc(e, "title", L))} · {esc(loc(e, "date_label", L))} · {esc(loc(e, "venue", L))}</h2>'
                       f'{video_block(L, e)}{photo_grid(L, e, photos[e["slug"]])}</section>')
     wall = ""
-    fiestas = [e["_poster"] for e in public if e.get("_poster")] + list(reversed(fiestas))
+    linked = [(e["_poster"], f'{pre(L)}/community/{e["slug"]}/', loc(e, "title", L)) for e in public if e.get("_poster") and counts[e["slug"]]]
+    plain = [e["_poster"] for e in public if e.get("_poster") and not counts[e["slug"]]] + list(reversed(fiestas))
     if not any(counts.values()): cards = ""
-    if fiestas:
-        wall = f'<section class="sec"><h2 class="sec-h">{t["fiestas_h"]}</h2><div class="wall">' + "".join(
-            f'<a class="ph pw" href="{u}" data-full="{u}" data-name="estocastic-cartel-{n:02d}.jpg"><img src="{u}" alt="{t["fiestas_alt"]} {n:02d}" loading="lazy"></a>'
-            for n, u in enumerate(fiestas, 1)) + "</div></section>"
+    items = "".join(f'<a class="pw" href="{h}" title="{esc(n)}"><img src="{u}" alt="{t["poster"]} {esc(n)}" loading="lazy"></a>' for u, h, n in linked)
+    items += "".join(f'<a class="ph pw" href="{u}" data-full="{u}" data-name="estocastic-cartel-{n:02d}.jpg"><img src="{u}" alt="{t["fiestas_alt"]} {n:02d}" loading="lazy"></a>' for n, u in enumerate(plain, 1))
+    wall = f'<section class="sec"><h2 class="sec-h">{t["fiestas_h"]}</h2><div class="wall">{items}</div></section>' if items else ""
+    fiestas = plain
     body = f'''{topbar(L, "/community/", "community")}<main class="wrap">
 {head(t['community_kicker'], "Community", esc((t['community_intro'] + (' ' + t['takedown'] if any(counts.values()) else '')).format(c=SITE['contact'])), sec="community")}
+{wall}
 {cards}
-{wall}{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}{lightbox(L) if (fiestas or cards) else ""}'''
+{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}{lightbox(L) if (fiestas or cards) else ""}'''
     return page(L, "Community · esτocasτic", t["community_desc"], body, "/community/")
 
 # ---------- LABEL ----------
