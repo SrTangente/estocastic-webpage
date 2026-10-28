@@ -200,6 +200,20 @@ def event_card(L, ev, count):
     tag, h = ("div", "") if soon else ("a", f' href="{pre(L)}/community/{ev["slug"]}/"')
     return f'<{tag} class="card{" soon" if soon else ""}{" cancelled" if cancelled else ""}" style="--acc:{acc(ev)}"{h}><div class="art brk">{badge}{art}</div><div class="cap">{cap}</div></{tag}>'
 
+def photo_grid(L, ev, photos):
+    t = T[L]; title = loc(ev, "title", L)
+    return f'<div class="grid">' + "".join(
+        f'<a class="ph" href="{p["full"]}" data-full="{p["full"]}" data-name="{p["name"]}">'
+        f'<img src="{p["thumb"]}" width="{p["w"]}" height="{p["h"]}" loading="lazy" alt="{esc(title)} — {t["photo_alt"]} {p["n"]:03d}">'
+        f'<span class="no">{p["n"]:03d}</span></a>' for p in photos) + "</div>"
+
+def video_block(L, ev):
+    v = ev.get("video")
+    if not v: return ""
+    t = T[L]
+    return (f'<figure class="vidbox brk"><video controls preload="metadata" playsinline src="{MB}{v["src"]}"></video>'
+            f'<figcaption class="micro">{esc(v["credit_en"] if L == "en" else v["credit"])}</figcaption></figure>')
+
 def event_page(L, ev, photos, ex=None):
     t = T[L]; exclusive = ev.get("exclusive")
     rel = f"/s/{SITE['secret']}/" if exclusive else f"/community/{ev['slug']}/"
@@ -222,14 +236,18 @@ def event_page(L, ev, photos, ex=None):
 <nav class="crumb micro" aria-label="{t['route']}">{crumb}</nav>
 <header class="ev-head" style="--acc:{acc(ev)}"><span class="micro"><span class="chip"></span>&nbsp; REF {code(ev)} · {esc(ev["date"])}</span>
 <h1>{esc(title)}</h1><dl class="meta brk">{dl}</dl></header>
-{grid}
+{video_block(L, ev)}{grid}
 {gate(L, ex) if (ex and not exclusive and SHOW_GATE) else ""}
 </main>{footer()}{lightbox(L) if photos else ""}'''
     return page(L, f"{title} · esτocasτic", t["ev_desc"].format(t=title, v=loc(ev, "venue", L)), body, rel, noindex=bool(exclusive))
 
-def community_page(L, public, counts, ex, fiestas):
+def community_page(L, public, counts, ex, fiestas, photos):
     t = T[L]
-    cards = "".join(event_card(L, e, counts[e["slug"]]) for e in public)
+    cards = ""
+    for e in public:
+        if counts[e["slug"]]:
+            cards += (f'<section class="sec evsec" style="--acc:{acc(e)}"><h2 class="sec-h"><span class="chip"></span>&nbsp; {esc(loc(e, "title", L))} · {esc(loc(e, "date_label", L))} · {esc(loc(e, "venue", L))}</h2>'
+                      f'{video_block(L, e)}{photo_grid(L, e, photos[e["slug"]])}</section>')
     wall = ""
     fiestas = [e["_poster"] for e in public if e.get("_poster")] + list(reversed(fiestas))
     if not any(counts.values()): cards = ""
@@ -239,8 +257,8 @@ def community_page(L, public, counts, ex, fiestas):
             for n, u in enumerate(fiestas, 1)) + "</div></section>"
     body = f'''{topbar(L, "/community/", "community")}<main class="wrap">
 {head(t['community_kicker'], "Community", esc((t['community_intro'] + (' ' + t['takedown'] if any(counts.values()) else '')).format(c=SITE['contact'])), sec="community")}
-{f'<section class="sec"><h2 class="sec-h">{t["photos_h"]}</h2><div class="cards" aria-label="{t["events"]}">{cards}</div></section>' if cards else ""}
-{wall}{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}{lightbox(L) if fiestas else ""}'''
+{cards}
+{wall}{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}{lightbox(L) if (fiestas or cards) else ""}'''
     return page(L, "Community · esτocasτic", t["community_desc"], body, "/community/")
 
 # ---------- LABEL ----------
@@ -391,7 +409,7 @@ def main():
         write(L, "shop", shop_page(L))
         write(L, "agency", agency_page(L, aph))
         for a in ARTISTS: write(L, f"agency/{a['slug']}", artist_page(L, a, aph[a["slug"]]))
-        write(L, "community", community_page(L, public, counts, ex, fiestas))
+        write(L, "community", community_page(L, public, counts, ex, fiestas, photos))
         for e in public:
             if not e.get("cancelled"): write(L, f"community/{e['slug']}", event_page(L, e, photos[e["slug"]], ex))
         if ex and SHOW_GATE: write(L, f"s/{SITE['secret']}", event_page(L, ex, photos[ex["slug"]]))

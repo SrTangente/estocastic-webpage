@@ -288,3 +288,8 @@ main{counter-reset:s}
 .wall .ph:hover,.wall .ph:focus-visible{transform:scale(1.12);z-index:5;box-shadow:0 18px 50px rgba(0,0,0,.7)}
 .wall .ph:hover img,.wall .ph:focus-visible img{border-color:var(--line-2)}
 @media(hover:none){.wall .ph:hover{transform:none;box-shadow:none}}
+
+.evsec .sec-h{display:flex;align-items:center}
+.vidbox{margin:0 0 14px;background:#000;position:relative}
+.vidbox video{display:block;width:100%;max-height:78vh;background:#000}
+.vidbox figcaption{padding:10px 12px;color:var(--muted)}

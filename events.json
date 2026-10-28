@@ -9,7 +9,12 @@
     "time": "16:00–22:00",
     "lineup": "Avsluta · Myrcene · Akagat · Neøpreno",
     "accent": "yin",
-    "photographer": ""
+    "photographer": "",
+    "video": {
+      "src": "/media/yin-gathering/video.mp4",
+      "credit": "Vídeo y edición: @iriscabre · Tema inédito: @ak__gat",
+      "credit_en": "Film & edit: @iriscabre · Unreleased track: @ak__gat"
+    }
   },
   {
     "slug": "yang-alchemy",
