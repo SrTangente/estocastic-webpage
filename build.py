@@ -372,7 +372,7 @@ def main():
     ex = next((e for e in events if e.get("exclusive")), None)
     photos = {e["slug"]: process_photos(e) for e in events}
     counts = {k: len(v) for k, v in photos.items()}
-    covers = {r["id"]: out_img("releases", r["cover"], 800, 86) for r in RELEASES}
+    covers = {r["id"]: out_img("releases", r["cover"], 1200, 86) for r in RELEASES}
     radio = {x["thumb"]: out_img("radio", x["thumb"], 800, 82) for x in CONTENT.get("radio", [])}
     fiestas = [u for u in (out_img("fiestas", s, 700, 84) for s in CONTENT.get("fiestas", [])) if u]
     group = out_img("about", "group", 1800, 84)
