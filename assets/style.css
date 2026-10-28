@@ -283,3 +283,8 @@ main{counter-reset:s}
 .card.cancelled .badge{background:#c0392b;color:#fff}
 .card .badge{z-index:2}
 .wall img{aspect-ratio:5/7;object-fit:contain;background:var(--surface)}
+.wall .ph{margin:0;overflow:visible;border:0;background:none;cursor:zoom-in;transition:transform .25s ease,box-shadow .25s ease,z-index 0s}
+.wall .ph img{border:1px solid var(--line);transition:none;transform:none}
+.wall .ph:hover,.wall .ph:focus-visible{transform:scale(1.12);z-index:5;box-shadow:0 18px 50px rgba(0,0,0,.7)}
+.wall .ph:hover img,.wall .ph:focus-visible img{border-color:var(--line-2)}
+@media(hover:none){.wall .ph:hover{transform:none;box-shadow:none}}

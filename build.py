@@ -235,11 +235,12 @@ def community_page(L, public, counts, ex, fiestas):
     if not any(counts.values()): cards = ""
     if fiestas:
         wall = f'<section class="sec"><h2 class="sec-h">{t["fiestas_h"]}</h2><div class="wall">' + "".join(
-            f'<img src="{u}" alt="{t["fiestas_alt"]}" loading="lazy">' for u in fiestas) + "</div></section>"
+            f'<a class="ph pw" href="{u}" data-full="{u}" data-name="estocastic-cartel-{n:02d}.jpg"><img src="{u}" alt="{t["fiestas_alt"]} {n:02d}" loading="lazy"></a>'
+            for n, u in enumerate(fiestas, 1)) + "</div></section>"
     body = f'''{topbar(L, "/community/", "community")}<main class="wrap">
 {head(t['community_kicker'], "Community", esc(t['community_intro'].format(c=SITE['contact'])), sec="community")}
 {f'<section class="sec"><h2 class="sec-h">{t["photos_h"]}</h2><div class="cards" aria-label="{t["events"]}">{cards}</div></section>' if cards else ""}
-{wall}{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}'''
+{wall}{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}{lightbox(L) if fiestas else ""}'''
     return page(L, "Community · esτocasτic", t["community_desc"], body, "/community/")
 
 # ---------- LABEL ----------
