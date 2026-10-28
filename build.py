@@ -368,7 +368,7 @@ def main():
     events = sorted(EVENTS, key=lambda e: e["date"], reverse=True)
     for e in events:
         e["secret"] = SITE["secret"]; e["_poster"] = out_img("posters", e["slug"], 1400, 84)
-    public = [e for e in events if not e.get("exclusive")]
+    public = [e for e in events if not e.get("exclusive") and not e.get("cancelled")]
     ex = next((e for e in events if e.get("exclusive")), None)
     photos = {e["slug"]: process_photos(e) for e in events}
     counts = {k: len(v) for k, v in photos.items()}
