@@ -279,3 +279,6 @@ main{counter-reset:s}
 .bar .items a.contact-link::before{content:"✉ ";opacity:.8}
 .wrap.top{z-index:40}
 @media(max-width:900px){.bar nav{background:#0a0a0d;box-shadow:0 18px 40px rgba(0,0,0,.6)}}
+.card.cancelled .art img{filter:grayscale(1) brightness(.6)}
+.card.cancelled .badge{background:#c0392b;color:#fff}
+.card .badge{z-index:2}

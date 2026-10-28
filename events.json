@@ -22,7 +22,8 @@
     "time": "23:59–08:00",
     "lineup": "KLIM · colell · ONA · Tangente",
     "accent": "yang",
-    "photographer": ""
+    "photographer": "",
+    "cancelled": true
   },
   {
     "slug": "analog-rolls",

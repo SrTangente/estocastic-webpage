@@ -42,7 +42,7 @@ T = {
    shop_kicker="Shop — 03", shop_desc="Tienda de esτocasτic.", shop_h="Pronto", shop_text="Estamos preparando la tienda. Síguenos para enterarte cuando abra.", shop_cta="Avisadme →",
    agency_kicker="Agency — 04", agency_intro="Artistas e integrantes. Para contratar, escríbenos a {c}.", agency_desc="Artistas de esτocasτic.",
    back_roster="← Volver a Agency", book="Contratar artista", artist_ph="Retrato de",
-   soon="Pronto", empty="Las fotos llegarán pronto.", date="Fecha", place="Lugar", time="Horario", fmt="Formato", photos="Fotos", photo="Foto",
+   soon="Pronto", soon_ph="Fotos pronto", cancelled="Cancelado", empty="Las fotos llegarán pronto.", date="Fecha", place="Lugar", time="Horario", fmt="Formato", photos="Fotos", photo="Foto",
    ev_desc="Fotos de {t} — esτocasτic. {v}.", crumb_ex="archivo analógico", photo_alt="foto", poster="Cartel",
    gate_kicker="Acceso · Access", gate_text="Una selección de fotos analógicas de los dos días. Deja tu correo y entra: te avisaremos de vez en cuando de novedades y próximas fechas de esτocasτic.",
    gate_open="Entrar al archivo analógico →", email_ph="correo@ejemplo.com", email_aria="Correo electrónico",
@@ -61,7 +61,7 @@ T = {
    shop_kicker="Shop — 03", shop_desc="esτocasτic shop.", shop_h="Soon", shop_text="We're preparing the shop. Follow us to know when it opens.", shop_cta="Notify me →",
    agency_kicker="Agency — 04", agency_intro="Artists and members. To book, write to {c}.", agency_desc="esτocasτic artists.",
    back_roster="← Back to Agency", book="Book artist", artist_ph="Portrait of",
-   soon="Soon", empty="Photos coming soon.", date="Date", place="Place", time="Time", fmt="Format", photos="Photos", photo="Photo",
+   soon="Soon", soon_ph="Photos soon", cancelled="Cancelled", empty="Photos coming soon.", date="Date", place="Place", time="Time", fmt="Format", photos="Photos", photo="Photo",
    ev_desc="Photos from {t} — esτocasτic. {v}.", crumb_ex="analog archive", photo_alt="photo", poster="Poster",
    gate_kicker="Access · Acceso", gate_text="A selection of analog photos from both days. Leave your email and step in: we'll let you know now and then about news and upcoming esτocasτic dates.",
    gate_open="Enter the analog archive →", email_ph="you@example.com", email_aria="Email address",
@@ -192,13 +192,13 @@ def lightbox(L):
 
 # ---------- COMMUNITY ----------
 def event_card(L, ev, count):
-    t = T[L]; title = esc(loc(ev, "title", L)); soon = count == 0
-    badge = f'<span class="badge">{t["soon"]}</span>' if soon else ""
+    t = T[L]; title = esc(loc(ev, "title", L)); cancelled = bool(ev.get("cancelled")); soon = count == 0 or cancelled
+    badge = f'<span class="badge">{t["cancelled"] if cancelled else t["soon_ph"]}</span>' if soon else ""
     art = f'<div class="fallback"><span class="chip"></span><div><span class="micro">{esc(ev["date"])}</span><br><b>{title}</b></div></div>'
     if ev.get("_poster"): art = f'<img src="{ev["_poster"]}" alt="{t["poster"]} {title}" loading="lazy">'
     cap = f'<span>{title}</span><span>{"—" if soon else f"{count:02d} ph"}</span>'
     tag, h = ("div", "") if soon else ("a", f' href="{pre(L)}/community/{ev["slug"]}/"')
-    return f'<{tag} class="card{" soon" if soon else ""}" style="--acc:{acc(ev)}"{h}><div class="art brk">{badge}{art}</div><div class="cap">{cap}</div></{tag}>'
+    return f'<{tag} class="card{" soon" if soon else ""}{" cancelled" if cancelled else ""}" style="--acc:{acc(ev)}"{h}><div class="art brk">{badge}{art}</div><div class="cap">{cap}</div></{tag}>'
 
 def event_page(L, ev, photos, ex=None):
     t = T[L]; exclusive = ev.get("exclusive")
@@ -389,7 +389,8 @@ def main():
         write(L, "agency", agency_page(L, aph))
         for a in ARTISTS: write(L, f"agency/{a['slug']}", artist_page(L, a, aph[a["slug"]]))
         write(L, "community", community_page(L, public, counts, ex, fiestas))
-        for e in public: write(L, f"community/{e['slug']}", event_page(L, e, photos[e["slug"]], ex))
+        for e in public:
+            if not e.get("cancelled"): write(L, f"community/{e['slug']}", event_page(L, e, photos[e["slug"]], ex))
         if ex and SHOW_GATE: write(L, f"s/{SITE['secret']}", event_page(L, ex, photos[ex["slug"]]))
     (ROOT / "robots.txt").write_text(f"User-agent: *\nDisallow: /s/\nDisallow: /en/s/\nSitemap: {SITE['domain']}/sitemap.xml\n", encoding="utf-8")
     rels = ["/"] + [f"/{s}/" for s in SECTIONS] + [f"/agency/{a['slug']}/" for a in ARTISTS] + [f"/community/{e['slug']}/" for e in public if counts[e["slug"]]]
