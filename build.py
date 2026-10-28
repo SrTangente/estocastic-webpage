@@ -35,7 +35,7 @@ SECTIONS = ["label", "about", "shop", "agency", "community"]
 T = {
  "es": dict(html="es", menu="Menú",
    community_kicker="Comunidad · Community — 05", community_intro="Los carteles de nuestras fiestas y la gente que las hace posibles.",
-   community_desc="Carteles de las fiestas de esτocasτic.", photos_h="Fotos", fiestas_h="Fiestas", fiestas_alt="Cartel de fiesta esτocasτic",
+   community_desc="Carteles de las fiestas de esτocasτic.", takedown="Si apareces en alguna foto y prefieres que la quitemos, escríbenos a {c}.", photos_h="Fotos", fiestas_h="Fiestas", fiestas_alt="Cartel de fiesta esτocasτic",
    label_kicker="Label — 01", label_intro="Nuestra serie de mixes y los streams de radio.", label_desc="Mixes y radio de esτocasτic.",
    mixes_h="Mixes", radio_h="Radio", listen="Escuchar", watch="Ver",
    about_kicker="About — 02", about_desc="Manifiesto de esτocasτic.", manifesto_h="Manifiesto", parties_h="Fiestas", contact_h="Contacto",
@@ -54,7 +54,7 @@ T = {
    subs=dict(label="Mixes · Radio", about="Manifiesto", shop="Pronto", agency="Artistas", community="Carteles · Fiestas")),
  "en": dict(html="en", menu="Menu",
    community_kicker="Community · Comunidad — 05", community_intro="The posters of our parties and the people who make them happen.",
-   community_desc="esτocasτic party posters.", photos_h="Photos", fiestas_h="Parties", fiestas_alt="esτocasτic party poster",
+   community_desc="esτocasτic party posters.", takedown="If you appear in a photo and would rather we take it down, write to {c}.", photos_h="Photos", fiestas_h="Parties", fiestas_alt="esτocasτic party poster",
    label_kicker="Label — 01", label_intro="Our mix series and radio streams.", label_desc="esτocasτic mixes and radio.",
    mixes_h="Mixes", radio_h="Radio", listen="Listen", watch="Watch",
    about_kicker="About — 02", about_desc="esτocasτic manifesto.", manifesto_h="Manifesto", parties_h="Parties", contact_h="Contact",
@@ -238,7 +238,7 @@ def community_page(L, public, counts, ex, fiestas):
             f'<a class="ph pw" href="{u}" data-full="{u}" data-name="estocastic-cartel-{n:02d}.jpg"><img src="{u}" alt="{t["fiestas_alt"]} {n:02d}" loading="lazy"></a>'
             for n, u in enumerate(fiestas, 1)) + "</div></section>"
     body = f'''{topbar(L, "/community/", "community")}<main class="wrap">
-{head(t['community_kicker'], "Community", esc(t['community_intro'].format(c=SITE['contact'])), sec="community")}
+{head(t['community_kicker'], "Community", esc((t['community_intro'] + (' ' + t['takedown'] if any(counts.values()) else '')).format(c=SITE['contact'])), sec="community")}
 {f'<section class="sec"><h2 class="sec-h">{t["photos_h"]}</h2><div class="cards" aria-label="{t["events"]}">{cards}</div></section>' if cards else ""}
 {wall}{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}{lightbox(L) if fiestas else ""}'''
     return page(L, "Community · esτocasτic", t["community_desc"], body, "/community/")
