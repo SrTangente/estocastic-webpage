@@ -282,3 +282,4 @@ main{counter-reset:s}
 .card.cancelled .art img{filter:grayscale(1) brightness(.6)}
 .card.cancelled .badge{background:#c0392b;color:#fff}
 .card .badge{z-index:2}
+.wall img{aspect-ratio:5/7;object-fit:contain;background:var(--surface)}

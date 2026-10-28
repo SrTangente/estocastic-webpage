@@ -34,8 +34,8 @@ SECTIONS = ["label", "about", "shop", "agency", "community"]
 
 T = {
  "es": dict(html="es", menu="Menú",
-   community_kicker="Comunidad · Community — 05", community_intro="Fotos de nuestras fiestas, los carteles y la gente que viene. Puedes ver y descargar las fotos gratis. Si apareces en alguna y prefieres que la quitemos, escríbenos a {c}.",
-   community_desc="Fotos y carteles de las fiestas de esτocasτic.", photos_h="Fotos", fiestas_h="Fiestas", fiestas_alt="Cartel de fiesta esτocasτic",
+   community_kicker="Comunidad · Community — 05", community_intro="Los carteles de nuestras fiestas y la gente que las hace posibles.",
+   community_desc="Carteles de las fiestas de esτocasτic.", photos_h="Fotos", fiestas_h="Fiestas", fiestas_alt="Cartel de fiesta esτocasτic",
    label_kicker="Label — 01", label_intro="Nuestra serie de mixes y los streams de radio.", label_desc="Mixes y radio de esτocasτic.",
    mixes_h="Mixes", radio_h="Radio", listen="Escuchar", watch="Ver",
    about_kicker="About — 02", about_desc="Manifiesto de esτocasτic.", manifesto_h="Manifiesto", parties_h="Fiestas", contact_h="Contacto",
@@ -51,10 +51,10 @@ T = {
    close="Cerrar ✕", prev="Anterior", next="Siguiente", dl="Descargar ↓", viewer="Visor de fotos", route="Ruta", links="Enlaces", events="Eventos",
    m_email="Revisa el correo.", m_consent="Debes aceptar para continuar.", m_na="Formulario no disponible ahora mismo.", m_fail="No se ha podido enviar. Inténtalo de nuevo.",
    symbol="Símbolo de esτocasτic", home_desc="esτocasτic — Let waveforms collapse. Label, About, Shop, Agency y Community.", home_sub_photos="Fotos de las fiestas",
-   subs=dict(label="Mixes · Radio", about="Manifiesto", shop="Pronto", agency="Artistas", community="Fotos · Fiestas")),
+   subs=dict(label="Mixes · Radio", about="Manifiesto", shop="Pronto", agency="Artistas", community="Carteles · Fiestas")),
  "en": dict(html="en", menu="Menu",
-   community_kicker="Community · Comunidad — 05", community_intro="Photos from our parties, the posters and the people who come. You can view and download the photos for free. If you appear in one and would rather we take it down, write to {c}.",
-   community_desc="Photos and posters from esτocasτic parties.", photos_h="Photos", fiestas_h="Parties", fiestas_alt="esτocasτic party poster",
+   community_kicker="Community · Comunidad — 05", community_intro="The posters of our parties and the people who make them happen.",
+   community_desc="esτocasτic party posters.", photos_h="Photos", fiestas_h="Parties", fiestas_alt="esτocasτic party poster",
    label_kicker="Label — 01", label_intro="Our mix series and radio streams.", label_desc="esτocasτic mixes and radio.",
    mixes_h="Mixes", radio_h="Radio", listen="Listen", watch="Watch",
    about_kicker="About — 02", about_desc="esτocasτic manifesto.", manifesto_h="Manifesto", parties_h="Parties", contact_h="Contact",
@@ -70,7 +70,7 @@ T = {
    close="Close ✕", prev="Previous", next="Next", dl="Download ↓", viewer="Photo viewer", route="Breadcrumb", links="Links", events="Events",
    m_email="Check your email address.", m_consent="You need to accept to continue.", m_na="The form is not available right now.", m_fail="Could not send. Please try again.",
    symbol="esτocasτic symbol", home_desc="esτocasτic — Let waveforms collapse. Label, About, Shop, Agency and Community.", home_sub_photos="Party photos",
-   subs=dict(label="Mixes · Radio", about="Manifesto", shop="Soon", agency="Artists", community="Photos · Parties")),
+   subs=dict(label="Mixes · Radio", about="Manifesto", shop="Soon", agency="Artists", community="Posters · Parties")),
 }
 def pre(L): return "" if L == "es" else "/en"
 def loc(d, key, L):
@@ -231,12 +231,14 @@ def community_page(L, public, counts, ex, fiestas):
     t = T[L]
     cards = "".join(event_card(L, e, counts[e["slug"]]) for e in public)
     wall = ""
+    fiestas = [e["_poster"] for e in public if e.get("_poster")] + list(reversed(fiestas))
+    if not any(counts.values()): cards = ""
     if fiestas:
         wall = f'<section class="sec"><h2 class="sec-h">{t["fiestas_h"]}</h2><div class="wall">' + "".join(
             f'<img src="{u}" alt="{t["fiestas_alt"]}" loading="lazy">' for u in fiestas) + "</div></section>"
     body = f'''{topbar(L, "/community/", "community")}<main class="wrap">
 {head(t['community_kicker'], "Community", esc(t['community_intro'].format(c=SITE['contact'])), sec="community")}
-<section class="sec"><h2 class="sec-h">{t['photos_h']}</h2><div class="cards" aria-label="{t['events']}">{cards}</div></section>
+{f'<section class="sec"><h2 class="sec-h">{t["photos_h"]}</h2><div class="cards" aria-label="{t["events"]}">{cards}</div></section>' if cards else ""}
 {wall}{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}'''
     return page(L, "Community · esτocasτic", t["community_desc"], body, "/community/")
 
