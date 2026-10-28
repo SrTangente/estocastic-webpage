@@ -30,12 +30,13 @@ EXTS = {".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff"}
 MB = SITE.get("media_base", "").rstrip("/")  # "" = mismo dominio; luego "https://media.estocastic.xyz"
 esc = html.escape
 LANGS = ("es", "en")
-SECTIONS = ["label", "about", "shop", "agency", "community"]
+SECTIONS = ["label", "about", "shop", "agency", "events", "community"]
 
 T = {
  "es": dict(html="es", menu="Menú",
-   community_kicker="Comunidad · Community — 05", community_intro="Los carteles de nuestras fiestas y la gente que las hace posibles.",
-   community_desc="Carteles de las fiestas de esτocasτic.", takedown="Si apareces en alguna foto y prefieres que la quitemos, escríbenos a {c}.", photos_h="Fotos", fiestas_h="Eventos", fiestas_alt="Cartel de fiesta esτocasτic",
+   events_kicker="Eventos · Events — 05", events_intro="Los carteles de nuestras fiestas. Toca uno para ver las fotos.", events_desc="Carteles y fotos de las fiestas de esτocasτic.",
+   community_kicker="Comunidad · Community — 06", community_intro="Las fotos y la gente que hace posibles nuestras fiestas.",
+   community_desc="Fotos y vídeo de las fiestas de esτocasτic.", takedown="Si apareces en alguna foto y prefieres que la quitemos, escríbenos a {c}.", photos_h="Fotos", events_h="Eventos", fiestas_alt="Cartel de fiesta esτocasτic",
    label_kicker="Label — 01", label_intro="Nuestra serie de mixes y los streams de radio.", label_desc="Mixes y radio de esτocasτic.",
    mixes_h="Mixes", radio_h="Radio", listen="Escuchar", watch="Ver",
    about_kicker="About — 02", about_desc="Manifiesto de esτocasτic.", manifesto_h="Manifiesto", parties_h="Fiestas", contact_h="Contacto",
@@ -51,10 +52,11 @@ T = {
    close="Cerrar ✕", prev="Anterior", next="Siguiente", dl="Descargar ↓", viewer="Visor de fotos", route="Ruta", links="Enlaces", events="Eventos",
    m_email="Revisa el correo.", m_consent="Debes aceptar para continuar.", m_na="Formulario no disponible ahora mismo.", m_fail="No se ha podido enviar. Inténtalo de nuevo.",
    symbol="Símbolo de esτocasτic", home_desc="esτocasτic — Let waveforms collapse. Label, About, Shop, Agency y Community.", home_sub_photos="Fotos de las fiestas",
-   subs=dict(label="Mixes · Radio", about="Manifiesto", shop="Pronto", agency="Artistas", community="Carteles · Fiestas")),
+   subs=dict(label="Mixes · Radio", about="Manifiesto", shop="Pronto", agency="Artistas", events="Carteles · Fiestas", community="Fotos · Vídeo")),
  "en": dict(html="en", menu="Menu",
-   community_kicker="Community · Comunidad — 05", community_intro="The posters of our parties and the people who make them happen.",
-   community_desc="esτocasτic party posters.", takedown="If you appear in a photo and would rather we take it down, write to {c}.", photos_h="Photos", fiestas_h="Events", fiestas_alt="esτocasτic party poster",
+   events_kicker="Events · Eventos — 05", events_intro="The posters of our parties. Tap one to see the photos.", events_desc="esτocasτic party posters and photos.",
+   community_kicker="Community · Comunidad — 06", community_intro="The photos and the people who make our parties happen.",
+   community_desc="Photos and video from esτocasτic parties.", takedown="If you appear in a photo and would rather we take it down, write to {c}.", photos_h="Photos", events_h="Events", fiestas_alt="esτocasτic party poster",
    label_kicker="Label — 01", label_intro="Our mix series and radio streams.", label_desc="esτocasτic mixes and radio.",
    mixes_h="Mixes", radio_h="Radio", listen="Listen", watch="Watch",
    about_kicker="About — 02", about_desc="esτocasτic manifesto.", manifesto_h="Manifesto", parties_h="Parties", contact_h="Contact",
@@ -70,7 +72,7 @@ T = {
    close="Close ✕", prev="Previous", next="Next", dl="Download ↓", viewer="Photo viewer", route="Breadcrumb", links="Links", events="Events",
    m_email="Check your email address.", m_consent="You need to accept to continue.", m_na="The form is not available right now.", m_fail="Could not send. Please try again.",
    symbol="esτocasτic symbol", home_desc="esτocasτic — Let waveforms collapse. Label, About, Shop, Agency and Community.", home_sub_photos="Party photos",
-   subs=dict(label="Mixes · Radio", about="Manifesto", shop="Soon", agency="Artists", community="Posters · Parties")),
+   subs=dict(label="Mixes · Radio", about="Manifesto", shop="Soon", agency="Artists", events="Posters · Parties", community="Photos · Video")),
 }
 def pre(L): return "" if L == "es" else "/en"
 def loc(d, key, L):
@@ -151,7 +153,7 @@ def footer():
 <span class="micro">@estocastic_ · <a href="mailto:{SITE['contact']}">{SITE['contact']}</a></span>
 <span class="micro">BCN · 41.39 N / 2.17 E · REF EST—2026</span></footer></div>'''
 
-SEC_ACC = {"label": "yin", "about": "text", "shop": "yang", "agency": "yin", "community": "yang"}
+SEC_ACC = {"label": "yin", "about": "text", "shop": "yang", "agency": "yin", "events": "yang", "community": "yang"}
 def strip(sec):
     i = SECTIONS.index(sec) + 1
     return (f'<div class="strip" aria-hidden="true"><span>EST—2026</span><span>{sec.upper()}/{i:02d}</span>'
@@ -241,7 +243,7 @@ def event_page(L, ev, photos, ex=None):
 </main>{footer()}{lightbox(L) if photos else ""}'''
     return page(L, f"{title} · esτocasτic", t["ev_desc"].format(t=title, v=loc(ev, "venue", L)), body, rel, noindex=bool(exclusive))
 
-def community_page(L, public, counts, ex, fiestas, photos):
+def community_page(L, public, counts, ex, photos):
     t = T[L]
     cards = ""
     for e in public:
@@ -249,19 +251,26 @@ def community_page(L, public, counts, ex, fiestas, photos):
             cards += (f'<section class="sec evsec" style="--acc:{acc(e)}"><h2 class="sec-h"><span class="chip"></span>&nbsp; {esc(loc(e, "title", L))} · {esc(loc(e, "date_label", L))} · {esc(loc(e, "venue", L))}</h2>'
                       f'{video_block(L, e)}{photo_grid(L, e, photos[e["slug"]])}</section>')
     wall = ""
-    linked = [(e["_poster"], f'{pre(L)}/community/{e["slug"]}/', loc(e, "title", L)) for e in public if e.get("_poster") and counts[e["slug"]]]
-    plain = [e["_poster"] for e in public if e.get("_poster") and not counts[e["slug"]]] + list(reversed(fiestas))
     if not any(counts.values()): cards = ""
-    items = "".join(f'<a class="pw" href="{h}" title="{esc(n)}"><img src="{u}" alt="{t["poster"]} {esc(n)}" loading="lazy"></a>' for u, h, n in linked)
-    items += "".join(f'<a class="ph pw" href="{u}" data-full="{u}" data-name="estocastic-cartel-{n:02d}.jpg"><img src="{u}" alt="{t["fiestas_alt"]} {n:02d}" loading="lazy"></a>' for n, u in enumerate(plain, 1))
-    wall = f'<section class="sec"><h2 class="sec-h">{t["fiestas_h"]}</h2><div class="wall">{items}</div></section>' if items else ""
-    fiestas = plain
     body = f'''{topbar(L, "/community/", "community")}<main class="wrap">
 {head(t['community_kicker'], "Community", esc((t['community_intro'] + (' ' + t['takedown'] if any(counts.values()) else '')).format(c=SITE['contact'])), sec="community")}
-{wall}
 {cards}
-{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}{lightbox(L) if (fiestas or cards) else ""}'''
+{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}{lightbox(L) if cards else ""}'''
     return page(L, "Community · esτocasτic", t["community_desc"], body, "/community/")
+
+# ---------- EVENTS ----------
+def events_page(L, public, counts, fiestas):
+    t = T[L]
+    linked = [(e["_poster"], f'{pre(L)}/community/{e["slug"]}/', loc(e, "title", L)) for e in public if e.get("_poster") and counts[e["slug"]]]
+    plain = [e["_poster"] for e in public if e.get("_poster") and not counts[e["slug"]]] + list(reversed(fiestas))
+    items = "".join(f'<a class="pw" href="{h}" title="{esc(n)}"><img src="{u}" alt="{t["poster"]} {esc(n)}" loading="lazy"></a>' for u, h, n in linked)
+    items += "".join(f'<a class="ph pw" href="{u}" data-full="{u}" data-name="estocastic-cartel-{n:02d}.jpg"><img src="{u}" alt="{t["fiestas_alt"]} {n:02d}" loading="lazy"></a>' for n, u in enumerate(plain, 1))
+    wall = f'<section class="sec"><h2 class="sec-h">{t["events_h"]}</h2><div class="wall">{items}</div></section>' if items else ""
+    fiestas = plain
+    body = f'''{topbar(L, "/events/", "events")}<main class="wrap">
+{head(t['events_kicker'], "Events", esc(t['events_intro']), sec="events")}
+{wall}</main>{footer()}{lightbox(L) if plain else ""}'''
+    return page(L, "Events · esτocasτic", t["events_desc"], body, "/events/")
 
 # ---------- LABEL ----------
 def label_page(L, covers, radio):
@@ -411,7 +420,8 @@ def main():
         write(L, "shop", shop_page(L))
         write(L, "agency", agency_page(L, aph))
         for a in ARTISTS: write(L, f"agency/{a['slug']}", artist_page(L, a, aph[a["slug"]]))
-        write(L, "community", community_page(L, public, counts, ex, fiestas, photos))
+        write(L, "events", events_page(L, public, counts, fiestas))
+        write(L, "community", community_page(L, public, counts, ex, photos))
         for e in public:
             if not e.get("cancelled"): write(L, f"community/{e['slug']}", event_page(L, e, photos[e["slug"]], ex))
         if ex and SHOW_GATE: write(L, f"s/{SITE['secret']}", event_page(L, ex, photos[ex["slug"]]))
