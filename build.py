@@ -147,9 +147,10 @@ def topbar(L, rel, section=None):
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">{t['menu']}</button>
 <nav id="menu"><span class="items">{items}<a class="contact-link" href="mailto:{SITE['contact']}">{t['contact_h'].upper()}</a></span><span class="lang">{sw}</span></nav></div></div>'''
 
-def footer():
+def footer(note=""):
+    n = f'<span class="micro">{esc(note)}</span>' if note else ""
     return f'''<div class="wrap"><footer class="foot">
-{barcode()}<span class="slogan">Let waveforms collapse</span>
+{n}{barcode()}<span class="slogan">Let waveforms collapse</span>
 <span class="micro">@estocastic_ · <a href="mailto:{SITE['contact']}">{SITE['contact']}</a></span>
 <span class="micro">BCN · 41.39 N / 2.17 E · REF EST—2026</span></footer></div>'''
 
@@ -240,7 +241,7 @@ def event_page(L, ev, photos, ex=None):
 <h1>{esc(title)}</h1><dl class="meta brk">{dl}</dl></header>
 {video_block(L, ev)}{grid}
 {gate(L, ex) if (ex and not exclusive and SHOW_GATE) else ""}
-</main>{footer()}{lightbox(L) if photos else ""}'''
+</main>{footer(t['takedown'].format(c=SITE['contact']) if photos and not exclusive else '')}{lightbox(L) if photos else ""}'''
     return page(L, f"{title} · esτocasτic", t["ev_desc"].format(t=title, v=loc(ev, "venue", L)), body, rel, noindex=bool(exclusive))
 
 def community_page(L, public, counts, ex, photos):
@@ -253,9 +254,9 @@ def community_page(L, public, counts, ex, photos):
     wall = ""
     if not any(counts.values()): cards = ""
     body = f'''{topbar(L, "/community/", "community")}<main class="wrap">
-{head(t['community_kicker'], "Community", (esc(t['takedown'].format(c=SITE['contact'])) if any(counts.values()) else ''), sec="community")}
+{head(t['community_kicker'], "Community", '', sec="community")}
 {cards}
-{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer()}{lightbox(L) if cards else ""}'''
+{gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer(t['takedown'].format(c=SITE['contact']) if cards else '')}{lightbox(L) if cards else ""}'''
     return page(L, "Community · esτocasτic", t["community_desc"], body, "/community/")
 
 # ---------- EVENTS ----------
