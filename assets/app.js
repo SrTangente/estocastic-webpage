@@ -76,7 +76,7 @@
     chs.forEach(function(c,n){c.style.setProperty('--lvl',base[n])});
     if(!calm)setInterval(function(){
       var c=chs[Math.floor(Math.random()*chs.length)],n=chs.indexOf(c);
-      if(c.matches(':hover,:focus-visible'))return;
+      if(document.hidden||c.matches(':hover,:focus-visible'))return;
       base[n]=Math.min(.85,Math.max(.12,base[n]+(Math.random()-.5)*.3));c.style.setProperty('--lvl',base[n].toFixed(2));
     },1400);
   }

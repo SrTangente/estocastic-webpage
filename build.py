@@ -238,7 +238,7 @@ def footer(note=""):
     n = f'<span class="micro">{esc(note)}</span>' if note else ""
     return f'''<div class="wrap"><footer class="foot">
 {n}<img class="foot-mark" src="/symbol-white.png" alt="" width="28" height="21" loading="lazy"><span class="slogan">Let waveforms collapse</span>
-<span class="micro">@estocastic_ · <a href="mailto:{SITE['contact']}">{SITE['contact']}</a></span>
+<span class="micro foot-contact"><span>@estocastic_</span><i class="dot">·</i><a href="mailto:{SITE['contact']}">{SITE['contact']}</a></span>
 <span class="micro">BCN · 41.39 N / 2.17 E · REF EST—2026</span></footer></div>'''
 
 SEC_ACC = {"label": "yin", "about": "text", "shop": "yang", "agency": "yin", "events": "yang", "community": "yang"}
@@ -378,7 +378,7 @@ def label_page(L, covers, radio):
     body = f'''{topbar(L, "/label/", "label")}<main id="main" class="wrap">
 {head(t['label_kicker'], "Label", t['label_intro'], sec="label")}
 <section class="sec"><h2 class="sec-h">{t['mixes_h']}</h2><div class="rels" style="--cols:{wall_cols(len(RELEASES))}">{items}</div></section>
-{f'<section class="sec"><h2 class="sec-h">{t["radio_h"]}</h2><div class="vids" style="--cols:{wall_cols(len(CONTENT.get("radio", [])), 3, 6, 4)}">{rad}</div></section>' if rad else ""}
+{f'<section class="sec"><h2 class="sec-h">{t["radio_h"]}</h2><div class="vids" style="--cols:{wall_cols(len(RELEASES))}">{rad}</div></section>' if rad else ""}
 </main>{footer()}'''
     return page(L, "Label · esτocasτic", t["label_desc"], body, "/label/")
 

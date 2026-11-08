@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-08T00:00:00Z",
+  "title": "Design System: esτocasτic",
+  "extensions": {
+    "colorMeta": {
+      "ground": { "role": "neutral", "displayName": "Ground Negro Tinta", "canonical": "#0a0a0d", "tonalRamp": ["#0a0a0d", "#111116", "#17171d", "#2a2a33", "#3a3a46", "#8b8b97", "#d4d0c8", "#f1ede6"] },
+      "surface": { "role": "neutral", "displayName": "Superficie", "canonical": "#111116", "tonalRamp": ["#0a0a0d", "#111116", "#17171d", "#2a2a33", "#3a3a46", "#8b8b97", "#d4d0c8", "#f1ede6"] },
+      "surface-2": { "role": "neutral", "displayName": "Superficie Elevada", "canonical": "#17171d", "tonalRamp": ["#0a0a0d", "#111116", "#17171d", "#2a2a33", "#3a3a46", "#8b8b97", "#d4d0c8", "#f1ede6"] },
+      "line": { "role": "neutral", "displayName": "Línea", "canonical": "#2a2a33", "tonalRamp": ["#0a0a0d", "#111116", "#17171d", "#2a2a33", "#3a3a46", "#8b8b97", "#d4d0c8", "#f1ede6"] },
+      "line-2": { "role": "neutral", "displayName": "Línea Fuerte", "canonical": "#3a3a46", "tonalRamp": ["#0a0a0d", "#111116", "#17171d", "#2a2a33", "#3a3a46", "#8b8b97", "#d4d0c8", "#f1ede6"] },
+      "text": { "role": "neutral", "displayName": "Crema", "canonical": "#f1ede6", "tonalRamp": ["#2a2925", "#4f4c47", "#74716b", "#99958f", "#b9b5ae", "#d4d0c8", "#e6e2db", "#f1ede6"] },
+      "text-soft": { "role": "neutral", "displayName": "Crema Suave", "canonical": "#d4d0c8", "tonalRamp": ["#2a2925", "#4f4c47", "#74716b", "#99958f", "#b0aca5", "#c3bfb7", "#d4d0c8", "#f1ede6"] },
+      "muted": { "role": "neutral", "displayName": "Gris Mudo", "canonical": "#8b8b97", "tonalRamp": ["#1f1f25", "#34343c", "#4a4a55", "#62626d", "#8b8b97", "#a6a6b0", "#c4c4cb", "#e3e3e7"] },
+      "yin": { "role": "primary", "displayName": "Yin Violeta", "canonical": "#8b93ff", "tonalRamp": ["#171a40", "#2a2f77", "#3f46b0", "#5961e0", "#8b93ff", "#aab0ff", "#c9cdff", "#e8eaff"] },
+      "yang": { "role": "secondary", "displayName": "Yang Ámbar", "canonical": "#e8b04b", "tonalRamp": ["#3a2a0c", "#5e4414", "#85621c", "#b08029", "#e8b04b", "#efc57a", "#f5d9a6", "#fbeed3"] },
+      "fader-cap-light": { "role": "neutral", "displayName": "Tapa de Fader Clara", "canonical": "#f6f2ea", "tonalRamp": ["#bdb8ae", "#c8c3b9", "#d3cec5", "#dcd8cf", "#e5e1d9", "#eeeae2", "#f6f2ea", "#fbf9f5"] },
+      "fader-cap-dark": { "role": "neutral", "displayName": "Tapa de Fader Oscura", "canonical": "#bdb8ae", "tonalRamp": ["#4a4843", "#68655f", "#85827a", "#a19d94", "#bdb8ae", "#cfcbc3", "#e1ded8", "#f2f0ec"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Títulos de página, evento y artista; Syne 800 en mayúsculas con barra de color." },
+      "section-title": { "displayName": "Titular de caja", "purpose": "Títulos de las cajas de newsletter y pronto." },
+      "card-title": { "displayName": "Título de tarjeta", "purpose": "Nombre en el fallback de tarjetas sin portada." },
+      "slogan": { "displayName": "Eslogan", "purpose": "Pie; Syne cursiva 14 px." },
+      "body": { "displayName": "Cuerpo", "purpose": "Prosa y bios en JetBrains Mono 13 px." },
+      "body-small": { "displayName": "Cuerpo pequeño", "purpose": "Datos de ficha, nombre y etiqueta de canal, mensajes (12 px)." },
+      "label": { "displayName": "Etiqueta", "purpose": "Navegación, leyendas, botones y cabeceras de sección en 11 px mayúsculas con tracking." }
+    },
+    "shadows": [
+      { "name": "symbol-halo", "value": "drop-shadow(0 8px 30px hsla(calc(240 + var(--h)), 90%, 70%, .30)) drop-shadow(0 3px 16px rgba(232,176,75,.12))", "purpose": "Halo de color del símbolo cromado; sigue el hue variable." },
+      { "name": "logo-lift", "value": "drop-shadow(0 4px 18px rgba(0,0,0,.45))", "purpose": "Separa el logo del fondo generativo." },
+      { "name": "poster-lift", "value": "0 18px 50px rgba(0,0,0,.7)", "purpose": "Cartel en hover o foco (solo con puntero), junto a scale(1.12)." },
+      { "name": "fader-cap", "value": "0 5px 12px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.7)", "purpose": "Peso físico de la tapa del fader y del knob." },
+      { "name": "menu-drop", "value": "0 18px 40px rgba(0,0,0,.6)", "purpose": "Menú móvil desplegado." }
+    ],
+    "motion": [
+      { "name": "state-fast", "value": ".15s", "purpose": "Color y fondo de enlaces, botones y filas." },
+      { "name": "image-zoom", "value": ".5s ease", "purpose": "Zoom de imagen en tarjetas (scale 1.03 a 1.04)." },
+      { "name": "hue-shift", "value": ".5s", "purpose": "Cambio de filtro del logo y símbolo al cambiar el hue --h." },
+      { "name": "channel-level", "value": ".9s cubic-bezier(.16,1,.3,1)", "purpose": "Subida de --lvl de un canal al pasar o enfocar." },
+      { "name": "reduced-motion", "value": "@media (prefers-reduced-motion: reduce) { * { transition: none !important } }", "purpose": "Anula las transiciones; los canales conservan solo borde y fondo." }
+    ],
+    "breakpoints": [
+      { "name": "xs", "value": "420px" },
+      { "name": "foot", "value": "520px" },
+      { "name": "meta", "value": "620px" },
+      { "name": "wall", "value": "701px" },
+      { "name": "desk", "value": "761px" },
+      { "name": "menu", "value": "900px" },
+      { "name": "gallery", "value": "1000px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón de contorno",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Acción secundaria; se invierte a crema en hover.",
+      "html": "<a class=\"ds-btn\" href=\"#\">SOUNDCLOUD ↗</a>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:10px;padding:11px 16px;border:1px solid #f1ede6;background:transparent;color:#f1ede6;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background .15s,color .15s}.ds-btn:hover{background:#f1ede6;color:#0a0a0d}.ds-btn:focus-visible{outline:2px solid #f1ede6;outline-offset:3px}"
+    },
+    {
+      "name": "Botón sólido",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Acción principal; fondo crema y texto ground.",
+      "html": "<a class=\"ds-btn-solid\" href=\"#\">CONTACTO</a>",
+      "css": ".ds-btn-solid{display:inline-flex;align-items:center;gap:10px;padding:11px 16px;border:1px solid #f1ede6;background:#f1ede6;color:#0a0a0d;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;cursor:pointer}.ds-btn-solid:hover{filter:brightness(1.1)}.ds-btn-solid:focus-visible{outline:2px solid #f1ede6;outline-offset:3px}"
+    },
+    {
+      "name": "Navegación",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Enlaces mono de 11 px en gris mudo; el actual y el hover en crema; contacto en ámbar.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\">LABEL</a><a href=\"#\" aria-current=\"page\">ABOUT</a><a href=\"#\">AGENCY</a><a href=\"#\" class=\"ds-contact\">✉ CONTACTO</a></nav>",
+      "css": ".ds-nav{display:flex;gap:22px;align-items:center;padding:18px 0;border-bottom:1px solid #3a3a46}.ds-nav a{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8b8b97;text-decoration:none;transition:color .15s}.ds-nav a:hover,.ds-nav a[aria-current]{color:#f1ede6}.ds-nav a.ds-contact{color:#e8b04b}.ds-nav a:focus-visible{outline:2px solid #f1ede6;outline-offset:3px}"
+    },
+    {
+      "name": "Título de página",
+      "kind": "custom",
+      "refersTo": "display",
+      "description": "Syne 800 en mayúsculas con barra de color a la izquierda y tira técnica encima.",
+      "html": "<div class=\"ds-head\"><div class=\"ds-strip\"><span>01</span><span>ESTOCASTIC</span></div><h1>AGENCY</h1></div>",
+      "css": ".ds-head{padding:20px 0}.ds-strip{display:flex;justify-content:space-between;padding-bottom:10px;margin-bottom:8px;border-bottom:1px solid #2a2a33;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.22em;color:#8b8b97}.ds-head h1{display:flex;align-items:flex-start;margin:0;font-family:Syne,'Trebuchet MS',sans-serif;font-weight:800;font-size:clamp(34px,8vw,64px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;color:#f1ede6}.ds-head h1::before{content:'';flex:none;width:.14em;height:.78em;margin:.1em .22em 0 0;background:#8b93ff}"
+    },
+    {
+      "name": "Tarjeta de artista",
+      "kind": "card",
+      "refersTo": "card-art",
+      "description": "Retrato 4:5 en escala de grises que recupera color en hover; leyenda bajo regla fina.",
+      "html": "<a class=\"ds-acard\" href=\"#\"><div class=\"ds-art\"><b>AKAGAT</b></div><div class=\"ds-cap\"><span>AKAGAT</span><span>DJ</span></div></a>",
+      "css": ".ds-acard{display:flex;flex-direction:column;gap:12px;width:210px;text-decoration:none;color:#f1ede6}.ds-art{aspect-ratio:4/5;background:linear-gradient(160deg,rgba(139,147,255,.14),transparent 60%),#111116;border:1px solid #2a2a33;padding:16px;display:flex;align-items:flex-end}.ds-art b{font-family:Syne,sans-serif;font-weight:800;font-size:24px;line-height:.95;text-transform:uppercase}.ds-cap{display:flex;justify-content:space-between;gap:10px;border-top:1px solid #2a2a33;padding-top:9px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase}.ds-cap span:last-child{color:#8b8b97}.ds-acard:hover .ds-art{border-color:#3a3a46}.ds-acard:focus-visible{outline:2px solid #f1ede6;outline-offset:3px}"
+    },
+    {
+      "name": "Campo de correo",
+      "kind": "input",
+      "refersTo": "field-email",
+      "description": "Campo recto sobre ground con foco crema de 2 px.",
+      "html": "<input class=\"ds-input\" type=\"email\" placeholder=\"email\">",
+      "css": ".ds-input{width:260px;padding:14px;background:#0a0a0d;border:1px solid #3a3a46;border-radius:0;color:#f1ede6;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.04em}.ds-input:focus{outline:2px solid #f1ede6;outline-offset:1px}"
+    },
+    {
+      "name": "Canal de mezcla (escritorio)",
+      "kind": "custom",
+      "refersTo": "channel",
+      "description": "Canal del home con nombre, fader de tapa rectangular y etiqueta; en hover sube al máximo.",
+      "html": "<a class=\"ds-ch\" href=\"#\"><span class=\"ds-n\">LABEL</span><span class=\"ds-rail\"><i class=\"ds-led\"></i><i class=\"ds-cap\"></i></span><span class=\"ds-s\">Mixes y radio</span></a>",
+      "css": ".ds-ch{--lvl:.62;--h:0;position:relative;display:grid;grid-template-rows:auto 240px auto;gap:14px;width:150px;padding:16px 12px 14px;text-decoration:none;color:#f1ede6;border:1px solid #2a2a33;background:rgba(17,17,22,.72);transition:border-color .2s,background .2s}.ds-ch:hover{border-color:#3a3a46;background:#17171d;--lvl:1}.ds-ch:focus-visible{outline:2px solid #f1ede6;outline-offset:2px}.ds-n{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.2em;text-align:center;text-transform:uppercase}.ds-s{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.06em;line-height:1.4;color:#8b8b97;text-align:center}.ds-rail{position:relative;margin:0 auto;width:60px;height:100%}.ds-rail::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#3a3a46}.ds-led{position:absolute;left:50%;bottom:0;width:4px;margin-left:-2px;height:calc(var(--lvl)*100%);background:linear-gradient(to top,hsla(calc(240 + var(--h)),90%,68%,.15),hsl(calc(240 + var(--h)),90%,72%));z-index:1}.ds-cap{position:absolute;left:50%;width:46px;height:26px;bottom:calc(var(--lvl)*100%);transform:translate(-50%,50%);border-radius:2px;z-index:2;background:linear-gradient(to bottom,#f6f2ea,#bdb8ae);box-shadow:0 5px 12px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.7)}.ds-cap::after{content:'';position:absolute;left:5px;right:5px;top:50%;height:2px;margin-top:-1px;background:hsl(calc(240 + var(--h)),85%,45%)}"
+    },
+    {
+      "name": "Canal de mezcla (móvil, knob)",
+      "kind": "custom",
+      "refersTo": "knob-cap",
+      "description": "Fila con nombre y etiqueta a la izquierda y knob de 64 px con aro de 270° a la derecha.",
+      "html": "<a class=\"ds-chm\" href=\"#\"><span class=\"ds-nm\">LABEL</span><span class=\"ds-sm\">Mixes y radio</span><span class=\"ds-knob\"><i class=\"ds-ring\"></i><i class=\"ds-kcap\"></i></span></a>",
+      "css": ".ds-chm{--lvl:.62;--h:0;display:grid;grid-template-columns:1fr 64px;grid-template-areas:'n k' 's k';align-items:center;gap:2px 14px;width:320px;min-height:84px;padding:10px 16px;text-decoration:none;color:#f1ede6;border:1px solid #2a2a33;background:rgba(17,17,22,.72)}.ds-chm:focus-visible{outline:2px solid #f1ede6;outline-offset:2px}.ds-nm{grid-area:n;align-self:end;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase}.ds-sm{grid-area:s;align-self:start;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.06em;color:#8b8b97}.ds-knob{grid-area:k;position:relative;width:64px;height:64px}.ds-ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 225deg,hsl(calc(240 + var(--h)),90%,72%) calc(var(--lvl)*270deg),#3a3a46 calc(var(--lvl)*270deg) 270deg,transparent 270deg);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px))}.ds-kcap{position:absolute;left:50%;top:50%;width:44px;height:44px;border-radius:50%;transform:translate(-50%,-50%) rotate(calc(-135deg + var(--lvl)*270deg));background:radial-gradient(circle at 35% 28%,#f6f2ea,#b4afa5 78%);box-shadow:0 5px 12px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.7)}.ds-kcap::after{content:'';position:absolute;left:50%;top:5px;width:3px;height:13px;margin-left:-1.5px;border-radius:2px;background:hsl(calc(240 + var(--h)),85%,45%)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La Hoja Técnica",
+    "overview": "El sitio se lee como una hoja técnica de estudio, no como una web de marca. Ground casi negro (#0a0a0d) con rejilla de 48 px, dos velos de color en las esquinas y un fondo generativo de ondas que se aplanan junto al cursor. Encima, líneas rectas: reglas verticales a los lados de la columna, reglas con ticks bajo la barra y sobre el pie, marcas de registro en las esquinas de los bloques, secciones numeradas.\n\nLa identidad manda: el símbolo cromado y el logo son el protagonista y su color cambia por visita mediante --h. El resto del sistema se mantiene quieto y monocromático para que ese color sea lo único vivo. El ámbar yang es puntual.\n\nLa pieza de esta ronda es el home: el índice es una mesa de mezclas de seis canales, uno por sección, con fader normal en escritorio y knob giratorio en móvil. Al pasar o enfocar un canal, su nivel sube al máximo y se enciende.",
+    "keyCharacteristics": [
+      "Oscuro, plano, de líneas finas; profundidad por capas tonales, no por sombras.",
+      "Dos voces tipográficas: Syne 800 en mayúsculas para nombres y títulos, JetBrains Mono para todo lo demás.",
+      "Una sola columna de 1080 px máx. entre dos reglas verticales.",
+      "Una única acentuación viva: el hue variable --h del símbolo, el logo y los niveles de los canales.",
+      "Escala de texto cerrada: 11 / 12 / 13 / 14 px más los títulos con clamp."
+    ],
+    "rules": [
+      { "name": "The One Live Hue Rule", "body": "Lo único que cambia de color por visita es el hue --h del símbolo, logo, niveles y marcas de tapa. Ninguna otra superficie introduce un color nuevo.", "section": "colors" },
+      { "name": "The Amber Is Rare Rule", "body": "El ámbar aparece como detalle (contacto, tags, mensajes), nunca como fondo de bloque ni color de título.", "section": "colors" },
+      { "name": "The Four Sizes Rule", "body": "El texto de interfaz solo usa 11, 12, 13 y 14 px; lo que crece es título y se resuelve con clamp. No se añaden tamaños intermedios.", "section": "typography" },
+      { "name": "The Caps With Tracking Rule", "body": "Toda etiqueta en mono va en mayúsculas con tracking de .12em o más; todo título Syne va en mayúsculas.", "section": "typography" },
+      { "name": "The Flat Until Touched Rule", "body": "Las superficies están planas en reposo; la elevación aparece como respuesta a puntero o foco (carteles) o como material de un objeto físico (tapa de fader, knob).", "section": "elevation" }
+    ],
+    "dos": [
+      "Do mantener ground #0a0a0d, superficies #111116/#17171d, líneas #2a2a33/#3a3a46 y texto #f1ede6 como únicos neutros.",
+      "Do usar Syne 800 en mayúsculas para nombres y títulos y JetBrains Mono para el resto; quedarse en 11/12/13/14 px.",
+      "Do dejar el hue variable --h como único color vivo, aplicado a símbolo, logo, niveles y marcas de tapa.",
+      "Do construir muros con columnas calculadas (--cols) para que todas las filas tengan el mismo número de piezas.",
+      "Do mostrar carteles en 5/7 con contain y retratos en 4:5 con cover.",
+      "Do respetar prefers-reduced-motion en cualquier movimiento nuevo y mantener el foco visible con contorno crema de 2 px.",
+      "Do mantener el contacto accesible en toda la web (barra y pie).",
+      "Do que cada elemento táctil mida al menos 24 px, compensando con margen negativo si hace falta."
+    ],
+    "donts": [
+      "Don't añadir subtítulos o introducciones bajo los títulos de página; solo lo imprescindible.",
+      "Don't mostrar un próximo evento: todos los eventos han pasado. Yang Alchemy no aparece en ninguna parte ni como «cancelado».",
+      "Don't usar esquinas redondeadas, sombras de reposo o degradados decorativos en tarjetas y botones; el redondeo solo es del knob.",
+      "Don't sustituir los faders por elementos inventados: la tapa es rectangular con marca central, y en móvil el knob giratorio.",
+      "Don't introducir un tercer acento ni usar el ámbar como fondo de bloque.",
+      "Don't usar imágenes del press kit PDF; siempre desde los originales en alta resolución."
+    ]
+  }
+}
