@@ -25,6 +25,11 @@ SITE, EVENTS = load("site.json", {}), load("events.json", [])
 ARTISTS, RELEASES, CONTENT = load("artists.json", []), load("releases.json", []), load("content.json", {})
 LINKS = load("links.json", [])
 SRC = ROOT / "source"
+import hashlib
+def av(name):
+    """Versión (hash corto) de un archivo de assets/ para que el navegador no use una copia vieja."""
+    f = ROOT / "assets" / name
+    return hashlib.md5(f.read_bytes()).hexdigest()[:8] if f.exists() else "0"
 SHOW_GATE = bool(SITE.get("endpoint")) or "--with-gate" in sys.argv  # sin endpoint no se muestra el formulario
 EXTS = {".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff"}
 MB = SITE.get("media_base", "").rstrip("/")  # "" = mismo dominio; luego "https://media.estocastic.xyz"
@@ -206,10 +211,10 @@ def page(L, title, desc, body, rel, noindex=False, og_image="/og.jpg", ld=None):
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><meta name="theme-color" content="#0a0a0d">
 {robots}{alts}{og}{jsonld(ld, noindex)}<link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/syne-latin.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="/assets/fonts/jetbrains-mono-latin.woff2" crossorigin>
-<link rel="stylesheet" href="/assets/fonts.css"><link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/fonts.css?v={av("fonts.css")}"><link rel="stylesheet" href="/assets/style.css?v={av("style.css")}">
 </head><body>
 {body}
-<script>window.EST={cfg};</script><script src="/assets/app.js" defer></script><script src="/assets/bg.js" defer></script>
+<script>window.EST={cfg};</script><script src="/assets/app.js?v={av("app.js")}" defer></script><script src="/assets/bg.js?v={av("bg.js")}" defer></script>
 </body></html>'''
 
 def topbar(L, rel, section=None):
@@ -224,7 +229,7 @@ def topbar(L, rel, section=None):
 def footer(note=""):
     n = f'<span class="micro">{esc(note)}</span>' if note else ""
     return f'''<div class="wrap"><footer class="foot">
-{n}{barcode()}<img class="foot-mark" src="/symbol-white.png" alt="" width="480" height="352" loading="lazy"><span class="slogan">Let waveforms collapse</span>
+{n}{barcode()}<img class="foot-mark" src="/symbol-white.png" alt="" width="28" height="21" loading="lazy"><span class="slogan">Let waveforms collapse</span>
 <span class="micro">@estocastic_ · <a href="mailto:{SITE['contact']}">{SITE['contact']}</a></span>
 <span class="micro">BCN · 41.39 N / 2.17 E · REF EST—2026</span></footer></div>'''
 
