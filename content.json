@@ -1,6 +1,7 @@
 {
   "about": {
-    "term": "ESTOCÁSTICO, CA",
+    "term": "ESTOCÁSTICO/A",
+    "term_en": "STOCHASTIC",
     "etym": "Del gr. στοχαστικός stochastikós 'conjetural'.",
     "etym_en": "From Gr. στοχαστικός stochastikós 'conjectural'.",
     "def": "Sistema cuyo comportamiento intrínseco es no determinista.",

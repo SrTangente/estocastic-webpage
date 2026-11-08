@@ -379,7 +379,7 @@ def about_page(L, group):
     img = f'<figure class="group brk"><img src="{group}"{dims(group)} alt="esτocasτic &amp; friends" loading="lazy"></figure>' if group else ""
     body = f'''{topbar(L, "/about/", "about")}<main id="main" class="wrap">
 {head(t['about_kicker'], "About", sec="about")}
-<section class="defn brk"><b>{esc(a.get("term",""))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></section>
+<section class="defn brk"><b>{esc(loc(a, "term", L))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></section>
 <section class="sec prose"><h2 class="sec-h">{t['manifesto_h']}</h2>{man}</section>
 </main>{footer()}'''
     return page(L, "About · esτocasτic", t["about_desc"], body, "/about/", og_image="/symbol.png")
