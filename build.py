@@ -135,7 +135,7 @@ def page(L, title, desc, body, rel, noindex=False, og_image="/symbol.png"):
 <link rel="stylesheet" href="/assets/style.css">
 </head><body>
 {body}
-<script>window.EST={cfg};</script><script src="/assets/app.js" defer></script>
+<script>window.EST={cfg};</script><script src="/assets/app.js" defer></script><script src="/assets/bg.js" defer></script>
 </body></html>'''
 
 def topbar(L, rel, section=None):
