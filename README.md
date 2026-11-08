@@ -1,7 +1,7 @@
 # estocastic.xyz
 
 Web estática bilingüe ES/EN (GitHub Pages) generada con `python3 build.py`. Español en `/`, inglés en `/en/`.
-Secciones: LABEL · ABOUT · SHOP · AGENCY · COMMUNITY.
+Secciones: LABEL · ABOUT · SHOP · AGENCY · EVENTS · COMMUNITY. Contexto y decisiones del proyecto: ver `CLAUDE.md`.
 
 - **Datos:** `events.json`, `artists.json`, `releases.json`, `content.json`, `site.json` (textos EN con sufijo `_en`).
 - **Fuentes de imagen** (en `source/`, no se sube a git): ver cabecera de `build.py`. `media/` es la salida optimizada (sí se sube).
