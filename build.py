@@ -229,7 +229,7 @@ def topbar(L, rel, section=None):
 def footer(note=""):
     n = f'<span class="micro">{esc(note)}</span>' if note else ""
     return f'''<div class="wrap"><footer class="foot">
-{n}{barcode()}<img class="foot-mark" src="/symbol-white.png" alt="" width="28" height="21" loading="lazy"><span class="slogan">Let waveforms collapse</span>
+{n}<img class="foot-mark" src="/symbol-white.png" alt="" width="28" height="21" loading="lazy"><span class="slogan">Let waveforms collapse</span>
 <span class="micro">@estocastic_ · <a href="mailto:{SITE['contact']}">{SITE['contact']}</a></span>
 <span class="micro">BCN · 41.39 N / 2.17 E · REF EST—2026</span></footer></div>'''
 
@@ -245,9 +245,6 @@ def head(kicker, title, intro="", extra="", sec=""):
     acc = f' style="--acc:var(--{SEC_ACC[sec]})"' if sec else ""
     return f'<header class="page-head"{acc}>{st}<span class="micro">{kicker}</span><h1>{title}</h1>{p}{extra}</header>'
 
-BARCODE = "".join(f'<rect x="{x}" y="0" width="{w}" height="22"/>' for x, w in
-                  [(0,2),(4,1),(7,3),(12,1),(15,2),(19,1),(22,3),(27,1),(30,2),(34,1),(37,1),(40,3),(45,2),(49,1),(52,2),(56,1),(59,3),(64,1),(67,2),(71,1),(74,2),(78,3),(83,1),(86,2),(90,1),(93,1)])
-def barcode(): return f'<svg class="barcode" viewBox="0 0 94 22" aria-hidden="true" fill="currentColor">{BARCODE}</svg>'
 
 def gate(L, ex):
     t = T[L]
@@ -403,11 +400,19 @@ def shop_page(L):
 LINK_LABELS = [("soundcloud", "SoundCloud"), ("instagram", "Instagram"), ("ra", "Resident Advisor"), ("bandcamp", "Bandcamp"),
                ("spotify", "Spotify"), ("youtube", "YouTube"), ("facebook", "Facebook"), ("presskit", "Press kit"), ("web", "Web")]
 def artist_extras(a):
+    """Fotos extra del artista: miniatura recortada a 4:5 (rejilla) + foto completa (visor)."""
     out = []
-    files = sorted(q for q in (SRC / "artists").glob(f"{a['slug']}_*") if q.suffix.lower() in EXTS) if (SRC / "artists").exists() else []
+    folder = SRC / "artists"
+    files = sorted(q for q in folder.glob(f"{a['slug']}_*") if q.suffix.lower() in EXTS) if folder.exists() else []
     for n, p in enumerate(files, 1):
-        out.append(out_img("artists", p.stem, 1400))
-    return [u for u in out if u]
+        thumb = ROOT / "media" / "artists" / "thumb" / f"{p.stem}.jpg"
+        full = out_img("artists", p.stem, 2000, dest_sub="artists/full")
+        if not full: continue
+        if not newer(thumb, p):
+            im = ImageOps.exif_transpose(Image.open(p)).convert("RGB")
+            ImageOps.fit(im, (800, 1000), Image.LANCZOS, centering=(0.5, 0.35)).save(ensure(thumb), "JPEG", quality=82, optimize=True, progressive=True)
+        out.append(dict(n=n, thumb=f"{MB}/media/artists/thumb/{p.stem}.jpg", full=full, name=f"estocastic-{a['slug']}-{n:02d}.jpg"))
+    return out
 
 def artist_card(L, a, photo):
     t = T[L]; name = esc(a["name"])
@@ -418,7 +423,8 @@ def artist_card(L, a, photo):
 def artist_page(L, a, photo):
     t = T[L]; rel = f"/agency/{a['slug']}/"
     name = esc(a["name"]) + (f' ({esc(a["country"])})' if a.get("country") else "")
-    extras = "".join(f'<img src="{u}"{dims(u)} alt="{t["artist_ph"]} {name}" loading="lazy">' for u in artist_extras(a))
+    ex = artist_extras(a)
+    extras = "".join(f'<a class="ph" href="{x["full"]}" data-full="{x["full"]}" data-name="{x["name"]}"><img src="{x["thumb"]}" width="800" height="1000" alt="{t["artist_ph"]} {name} {x["n"]:02d}" loading="lazy"></a>' for x in ex)
     extras = f'<section class="agal">{extras}</section>' if extras else ""
     book = f'<a class="btn solid" style="--acc:var(--yin)" href="mailto:{SITE["contact"]}?subject=Booking%20-%20{esc(a["name"]).replace(" ", "%20")}">{t["book"]} →</a>'
     links = "".join(f'<a class="btn" href="{esc(a["links"][k])}" target="_blank" rel="noopener">{lab} ↗</a>' for k, lab in LINK_LABELS if a.get("links", {}).get(k))
@@ -428,7 +434,7 @@ def artist_page(L, a, photo):
     body = f'''{topbar(L, rel, "agency")}<main id="main" class="wrap">
 <nav class="crumb micro" aria-label="{t['route']}"><a href="{pre(L)}/agency/">{t["back_roster"]}</a></nav>
 <article class="aview">{img}<div class="atext"><span class="micro">{esc(loc(a, "role", L))}</span>
-<h1>{name}</h1>{bio}<div class="alinks">{book}{links}</div></div></article>{extras}</main>{footer()}'''
+<h1>{name}</h1>{bio}<div class="alinks">{book}{links}</div></div></article>{extras}</main>{footer()}{lightbox(L) if ex else ""}'''
     d = str(loc(a, "bio", L)).split("\n")[0][:150]
     return page(L, f"{a['name']} · esτocasτic", d or t["agency_desc"], body, rel, og_image=(photo if photo and not MB else "/og.jpg"), ld=artist_ld(L, a, photo))
 
