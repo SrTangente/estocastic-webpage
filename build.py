@@ -334,7 +334,7 @@ def artist_card(L, a, photo):
     t = T[L]; name = esc(a["name"])
     img = (f'<img src="{photo}" alt="{t["artist_ph"]} {name}" loading="lazy">' if photo else f'<div class="fallback"><span class="chip"></span><b>{name}</b></div>')
     return (f'<a class="acard" href="{pre(L)}/agency/{a["slug"]}/"><div class="art brk">{img}</div>'
-            f'<div class="cap"><span>{name}</span><span>{esc(loc(a, "role", L))}</span></div></a>')
+            f'<div class="cap"><span>{name}</span></div></a>')
 
 def artist_page(L, a, photo):
     t = T[L]; rel = f"/agency/{a['slug']}/"
