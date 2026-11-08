@@ -250,7 +250,6 @@ body::before{
 /* cabecera de página */
 .page-head{position:relative}
 .strip{display:flex;justify-content:space-between;gap:12px;padding-bottom:10px;margin-bottom:8px;border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.22em;color:var(--muted)}
-.strip span:nth-child(3){opacity:.7}
 @media(max-width:620px){.strip .hide-s{display:none}}
 .page-head::before{
   content:"";position:absolute;left:-5px;top:-5px;width:11px;height:11px;pointer-events:none;
@@ -375,3 +374,6 @@ main{counter-reset:s}
 
 /* foco de teclado unificado */
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+
+/* Label: filas con el mismo número de portadas en escritorio */
+@media(min-width:701px){.rels,.vids{grid-template-columns:repeat(var(--cols,4),1fr)}}

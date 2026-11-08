@@ -377,8 +377,8 @@ def label_page(L, covers, radio):
         for x in CONTENT.get("radio", []))
     body = f'''{topbar(L, "/label/", "label")}<main id="main" class="wrap">
 {head(t['label_kicker'], "Label", t['label_intro'], sec="label")}
-<section class="sec"><h2 class="sec-h">{t['mixes_h']}</h2><div class="rels">{items}</div></section>
-{f'<section class="sec"><h2 class="sec-h">{t["radio_h"]}</h2><div class="vids">{rad}</div></section>' if rad else ""}
+<section class="sec"><h2 class="sec-h">{t['mixes_h']}</h2><div class="rels" style="--cols:{wall_cols(len(RELEASES))}">{items}</div></section>
+{f'<section class="sec"><h2 class="sec-h">{t["radio_h"]}</h2><div class="vids" style="--cols:{wall_cols(len(CONTENT.get("radio", [])), 3, 6, 4)}">{rad}</div></section>' if rad else ""}
 </main>{footer()}'''
     return page(L, "Label · esτocasτic", t["label_desc"], body, "/label/")
 
