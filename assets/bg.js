@@ -3,7 +3,7 @@
   var root=document.documentElement;
   function sget(){try{return sessionStorage.getItem('est_h')}catch(e){return null}}
   function sset(v){try{sessionStorage.setItem('est_h',v)}catch(e){}}
-  var h=sget(); h=h===null?Math.floor(Math.random()*360):+h; if(isNaN(h))h=0;
+  var h=sget(); h=h===null?(Math.random()<.5?Math.round(Math.random()*24-12):Math.floor(Math.random()*360)):+h; if(isNaN(h))h=0;
   function setH(v){h=((v%360)+360)%360;root.style.setProperty('--h',h);sset(h)}
   setH(h);
 
