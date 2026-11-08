@@ -323,7 +323,7 @@ def event_page(L, ev, photos, ex=None):
              else f'<a href="{pre(L)}/">esτocasτic</a> / {t["crumb_ex"]}')
     body = f'''{topbar(L, rel, "community")}<main id="main" class="wrap">
 <nav class="crumb micro" aria-label="{t['route']}">{crumb}</nav>
-<header class="ev-head" style="--acc:{acc(ev)}"><span class="micro"><span class="chip"></span>&nbsp; REF {code(ev)} · {esc(ev["date"])}</span>
+<header class="ev-head" style="--acc:{acc(ev)}"><span class="micro">REF {code(ev)} · {esc(ev["date"])}</span>
 <h1>{esc(title)}</h1><dl class="meta brk">{dl}</dl></header>
 {video_block(L, ev)}{grid}
 {gate(L, ex) if (ex and not exclusive and SHOW_GATE) else ""}
