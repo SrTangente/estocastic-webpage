@@ -49,7 +49,7 @@ T = {
    gate_open="Entrar al archivo analógico →", email_ph="correo@ejemplo.com", email_aria="Correo electrónico",
    consent="Acepto recibir comunicaciones de esτocasτic (novedades y próximos eventos). Puedo darme de baja cuando quiera.", submit="Entrar →",
    fine="Responsable: {ctl}. Finalidad: enviarte la newsletter y darte acceso a las fotos. Legitimación: tu consentimiento. Derechos de acceso, rectificación y supresión (y baja): {c}.",
-   close="Cerrar ✕", prev="Anterior", next="Siguiente", dl="Descargar ↓", viewer="Visor de fotos", route="Ruta", links="Enlaces", events="Eventos",
+   close="Cerrar ✕", prev="Anterior", next="Siguiente", dl="Descargar ↓", viewer="Visor de fotos", route="Ruta", skip="Saltar al contenido", nav_main="Principal", video="Vídeo", links="Enlaces", events="Eventos",
    m_email="Revisa el correo.", m_consent="Debes aceptar para continuar.", m_na="Formulario no disponible ahora mismo.", m_fail="No se ha podido enviar. Inténtalo de nuevo.",
    symbol="Símbolo de esτocasτic", home_title="esτocasτic — Colectivo de música electrónica · Barcelona", home_desc="Colectivo y label de música electrónica en Barcelona. Mixes, radio, artistas y fiestas. Let waveforms collapse.", home_sub_photos="Fotos de las fiestas",
    subs=dict(label="Mixes · Radio", about="Manifiesto", shop="Pronto", agency="Artistas", events="Carteles · Fiestas", community="Fotos · Vídeo")),
@@ -69,7 +69,7 @@ T = {
    gate_open="Enter the analog archive →", email_ph="you@example.com", email_aria="Email address",
    consent="I agree to receive communications from esτocasτic (news and upcoming events). I can unsubscribe at any time.", submit="Enter →",
    fine="Controller: {ctl}. Purpose: sending you the newsletter and giving you access to the photos. Legal basis: your consent. Rights of access, rectification and erasure (and unsubscribing): {c}.",
-   close="Close ✕", prev="Previous", next="Next", dl="Download ↓", viewer="Photo viewer", route="Breadcrumb", links="Links", events="Events",
+   close="Close ✕", prev="Previous", next="Next", dl="Download ↓", viewer="Photo viewer", route="Breadcrumb", skip="Skip to content", nav_main="Main", video="Video", links="Links", events="Events",
    m_email="Check your email address.", m_consent="You need to accept to continue.", m_na="The form is not available right now.", m_fail="Could not send. Please try again.",
    symbol="esτocasτic symbol", home_title="esτocasτic — Electronic music collective · Barcelona", home_desc="Electronic music collective and label in Barcelona. Mixes, radio, artists and parties. Let waveforms collapse.", home_sub_photos="Party photos",
    subs=dict(label="Mixes · Radio", about="Manifesto", shop="Soon", agency="Artists", events="Posters · Parties", community="Photos · Video")),
@@ -104,6 +104,25 @@ def dims(url):
         with Image.open(ROOT / (url[len(MB):] if MB and url.startswith(MB) else url).lstrip("/")) as im: return f' width="{im.width}" height="{im.height}"'
     except OSError: return ""
 
+SZ_CARD = "(max-width:520px) 100vw, 240px"   # tarjetas (Label, Agency, Community)
+SZ_WALL = "(max-width:520px) 50vw, 170px"    # muro de carteles (Events)
+def rimg(url, sizes, widths=(480, 800)):
+    """srcset/sizes/width/height: crea copias reducidas en media/<dir>/w<N>/ a partir de la imagen ya optimizada."""
+    src = ROOT / (url[len(MB):] if MB and url.startswith(MB) else url).lstrip("/")
+    try:
+        with Image.open(src) as im0: W, H = im0.size
+    except OSError: return ""
+    parts = []
+    for w in widths:
+        if w >= W: continue
+        dest = src.parent / f"w{w}" / src.name
+        if not newer(dest, src):
+            with Image.open(src) as im:
+                im.convert("RGB").resize((w, round(H * w / W)), Image.LANCZOS).save(ensure(dest), "JPEG", quality=80, optimize=True, progressive=True)
+        parts.append(f"{url[:url.rindex('/')]}/w{w}/{src.name} {w}w")
+    parts.append(f"{url} {W}w")
+    return f' srcset="{", ".join(parts)}" sizes="{sizes}" width="{W}" height="{H}"'
+
 def process_photos(ev):
     d = ev["secret"] if ev.get("exclusive") else ev["slug"]
     folder = SRC / ev["slug"]
@@ -133,6 +152,13 @@ def make_og():
     im.paste(sym, ((1200 - sym.width) // 2, 70), sym)
     im.paste(logo, ((1200 - logo.width) // 2, 70 + sym.height + 50), logo)
     im.save(dest, "JPEG", quality=88, optimize=True, progressive=True)
+
+def make_symbol_small():
+    """symbol-s.png (480 px de ancho) para pantallas donde el símbolo se muestra a ~150-210 px."""
+    dest = ROOT / "symbol-s.png"
+    if newer(dest, ROOT / "symbol.png"): return
+    with Image.open(ROOT / "symbol.png") as im:
+        im.convert("RGBA").resize((480, round(im.height * 480 / im.width)), Image.LANCZOS).save(dest, "PNG", optimize=True)
 
 # ---------- datos estructurados (JSON-LD) ----------
 def jsonld(data, noindex=False):
@@ -190,10 +216,10 @@ def topbar(L, rel, section=None):
     t = T[L]
     items = "".join(f'<a href="{pre(L)}/{s}/"{ARIA_PAGE if s == section else ""}>{s.upper()}</a>' for s in SECTIONS)
     sw = "".join(f'<a href="{pre(l)}{rel}" hreflang="{l}" lang="{l}"{ARIA_TRUE if l == L else ""}>{l.upper()}</a>' for l in LANGS)
-    return f'''<div class="wrap top"><div class="bar">
+    return f'''<a class="skip" href="#main">{t['skip']}</a><header class="wrap top"><div class="bar">
 <a class="brand" href="{pre(L)}/" aria-label="esτocasτic"><img src="/logo.png" alt="esτocasτic"></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">{t['menu']}</button>
-<nav id="menu"><span class="items">{items}<a class="contact-link" href="mailto:{SITE['contact']}">{t['contact_h'].upper()}</a></span><span class="lang">{sw}</span></nav></div></div>'''
+<nav id="menu" aria-label="{t['nav_main']}"><span class="items">{items}<a class="contact-link" href="mailto:{SITE['contact']}">{t['contact_h'].upper()}</a></span><span class="lang">{sw}</span></nav></div></header>'''
 
 def footer(note=""):
     n = f'<span class="micro">{esc(note)}</span>' if note else ""
@@ -246,7 +272,7 @@ def event_card(L, ev, count):
     t = T[L]; title = esc(loc(ev, "title", L)); cancelled = bool(ev.get("cancelled")); soon = count == 0 or cancelled
     badge = f'<span class="badge">{t["cancelled"] if cancelled else t["soon_ph"]}</span>' if soon else ""
     art = f'<div class="fallback"><span class="chip"></span><div><span class="micro">{esc(ev["date"])}</span><br><b>{title}</b></div></div>'
-    if ev.get("_poster"): art = f'<img src="{ev["_poster"]}" alt="{t["poster"]} {title}" loading="lazy">'
+    if ev.get("_poster"): art = f'<img src="{ev["_poster"]}"{rimg(ev["_poster"], SZ_CARD)} alt="{t["poster"]} {title}" loading="lazy">'
     cap = f'<span>{title}</span><span>{"—" if soon else f"{count:02d} ph"}</span>'
     tag, h = ("div", "") if soon else ("a", f' href="{pre(L)}/community/{ev["slug"]}/"')
     return f'<{tag} class="card{" soon" if soon else ""}{" cancelled" if cancelled else ""}" style="--acc:{acc(ev)}"{h}><div class="art brk">{badge}{art}</div><div class="cap">{cap}</div></{tag}>'
@@ -262,7 +288,9 @@ def video_block(L, ev):
     v = ev.get("video")
     if not v: return ""
     t = T[L]
-    return (f'<figure class="vidbox brk"><video controls preload="metadata" playsinline src="{MB}{v["src"]}"></video>'
+    pdir = v["src"].rsplit("/", 1)[0]
+    poster = f' poster="{MB}{pdir}/video-poster.jpg"' if (ROOT / pdir.lstrip("/") / "video-poster.jpg").exists() else ""
+    return (f'<figure class="vidbox brk"><video controls preload="metadata" playsinline{poster} aria-label="{esc(loc(ev, "title", L))} — {t["video"]}" src="{MB}{v["src"]}"></video>'
             f'<figcaption class="micro">{esc(v["credit_en"] if L == "en" else v["credit"])}</figcaption></figure>')
 
 def event_page(L, ev, photos, ex=None):
@@ -283,7 +311,7 @@ def event_page(L, ev, photos, ex=None):
         grid = f'<div class="empty">{t["empty"]}</div>'
     crumb = (f'<a href="{pre(L)}/">esτocasτic</a> / <a href="{pre(L)}/community/">community</a> / {esc(ev["slug"])}' if not exclusive
              else f'<a href="{pre(L)}/">esτocasτic</a> / {t["crumb_ex"]}')
-    body = f'''{topbar(L, rel, "community")}<main class="wrap">
+    body = f'''{topbar(L, rel, "community")}<main id="main" class="wrap">
 <nav class="crumb micro" aria-label="{t['route']}">{crumb}</nav>
 <header class="ev-head" style="--acc:{acc(ev)}"><span class="micro"><span class="chip"></span>&nbsp; REF {code(ev)} · {esc(ev["date"])}</span>
 <h1>{esc(title)}</h1><dl class="meta brk">{dl}</dl></header>
@@ -301,7 +329,7 @@ def community_page(L, public, counts, ex, photos):
                       f'{video_block(L, e)}{photo_grid(L, e, photos[e["slug"]])}</section>')
     wall = ""
     if not any(counts.values()): cards = ""
-    body = f'''{topbar(L, "/community/", "community")}<main class="wrap">
+    body = f'''{topbar(L, "/community/", "community")}<main id="main" class="wrap">
 {head(t['community_kicker'], "Community", '', sec="community")}
 {cards}
 {gate(L, ex) if (ex and SHOW_GATE) else ""}</main>{footer(t['takedown'].format(c=SITE['contact']) if cards else '')}{lightbox(L) if cards else ""}'''
@@ -312,11 +340,11 @@ def events_page(L, public, counts, fiestas):
     t = T[L]
     linked = [(e["_poster"], f'{pre(L)}/community/{e["slug"]}/', loc(e, "title", L)) for e in public if e.get("_poster") and counts[e["slug"]]]
     plain = [e["_poster"] for e in public if e.get("_poster") and not counts[e["slug"]]] + list(reversed(fiestas))
-    items = "".join(f'<a class="pw" href="{h}" title="{esc(n)}"><img src="{u}" alt="{t["poster"]} {esc(n)}" loading="lazy"></a>' for u, h, n in linked)
-    items += "".join(f'<a class="ph pw" href="{u}" data-full="{u}" data-name="estocastic-cartel-{n:02d}.jpg"><img src="{u}" alt="{t["fiestas_alt"]} {n:02d}" loading="lazy"></a>' for n, u in enumerate(plain, 1))
+    items = "".join(f'<a class="pw" href="{h}" title="{esc(n)}"><img src="{u}"{rimg(u, SZ_WALL)} alt="{t["poster"]} {esc(n)}" loading="lazy"></a>' for u, h, n in linked)
+    items += "".join(f'<a class="ph pw" href="{u}" data-full="{u}" data-name="estocastic-cartel-{n:02d}.jpg"><img src="{u}"{rimg(u, SZ_WALL)} alt="{t["fiestas_alt"]} {n:02d}" loading="lazy"></a>' for n, u in enumerate(plain, 1))
     wall = f'<section class="sec"><div class="wall">{items}</div></section>' if items else ""
     fiestas = plain
-    body = f'''{topbar(L, "/events/", "events")}<main class="wrap">
+    body = f'''{topbar(L, "/events/", "events")}<main id="main" class="wrap">
 {head(t['events_kicker'], "Events", esc(t['events_intro']), sec="events")}
 {wall}</main>{footer()}{lightbox(L) if plain else ""}'''
     return page(L, "Events · esτocasτic", t["events_desc"], body, "/events/")
@@ -329,15 +357,15 @@ def label_page(L, covers, radio):
         c = covers.get(r["id"])
         num = f'{r["series"].upper()} {r["num"]}'.strip() if r.get("num") else r["series"].upper()
         sub = f'{num}' + (f' · {r["date"][:4]}' if r.get("date") else "")
-        img = f'<img src="{c}" alt="{esc(r["title"])}" loading="lazy">' if c else f'<div class="fallback"><b>{esc(r["title"])}</b></div>'
+        img = f'<img src="{c}"{rimg(c, SZ_CARD)} alt="{esc(r["title"])}" loading="lazy">' if c else f'<div class="fallback"><b>{esc(r["title"])}</b></div>'
         items += (f'<a class="rel" href="{esc(r["url"])}" target="_blank" rel="noopener"><div class="art brk">{img}</div>'
                   f'<div class="cap"><span>{esc(r["title"])}</span><span>{esc(sub)}</span></div></a>')
     rad = "".join(
         f'<a class="vid" href="{esc(x["url"])}" target="_blank" rel="noopener"><div class="art">'
-        + (f'<img src="{radio[x["thumb"]]}" alt="{esc(x["title"])}" loading="lazy">' if radio.get(x["thumb"]) else "")
+        + (f'<img src="{radio[x["thumb"]]}"{rimg(radio[x["thumb"]], SZ_CARD)} alt="{esc(x["title"])}" loading="lazy">' if radio.get(x["thumb"]) else "")
         + f'<span class="play">▶</span></div><div class="cap"><span>{esc(x["title"])}</span><span>pnc radio ↗</span></div></a>'
         for x in CONTENT.get("radio", []))
-    body = f'''{topbar(L, "/label/", "label")}<main class="wrap">
+    body = f'''{topbar(L, "/label/", "label")}<main id="main" class="wrap">
 {head(t['label_kicker'], "Label", t['label_intro'], sec="label")}
 <section class="sec"><h2 class="sec-h">{t['mixes_h']}</h2><div class="rels">{items}</div></section>
 {f'<section class="sec"><h2 class="sec-h">{t["radio_h"]}</h2><div class="vids">{rad}</div></section>' if rad else ""}
@@ -349,7 +377,7 @@ def about_page(L, group):
     t = T[L]; a = CONTENT.get("about", {})
     man = "".join(f"<p>{esc(x)}</p>" for x in (a.get("manifesto_en") if L == "en" else a.get("manifesto", [])))
     img = f'<figure class="group brk"><img src="{group}"{dims(group)} alt="esτocasτic &amp; friends" loading="lazy"></figure>' if group else ""
-    body = f'''{topbar(L, "/about/", "about")}<main class="wrap">
+    body = f'''{topbar(L, "/about/", "about")}<main id="main" class="wrap">
 {head(t['about_kicker'], "About", sec="about")}
 <section class="defn brk"><b>{esc(a.get("term",""))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></section>
 <section class="sec prose"><h2 class="sec-h">{t['manifesto_h']}</h2>{man}</section>
@@ -361,7 +389,7 @@ def shop_page(L):
     t = T[L]
     cta = (f'<a class="btn solid" style="--acc:var(--yang)" href="{pre(L)}/community/#gate">{t["shop_cta"]}</a>' if SHOW_GATE
            else '<a class="btn solid" style="--acc:var(--yang)" href="https://www.instagram.com/estocastic_/" target="_blank" rel="noopener">@estocastic_ ↗</a>')
-    body = f'''{topbar(L, "/shop/", "shop")}<main class="wrap">
+    body = f'''{topbar(L, "/shop/", "shop")}<main id="main" class="wrap">
 {head(t['shop_kicker'], "Shop", sec="shop")}
 <section class="soon-box brk"><span class="chip"></span><h2>{t['shop_h']}</h2><p>{t['shop_text']}</p>
 {cta}</section>
@@ -380,7 +408,7 @@ def artist_extras(a):
 
 def artist_card(L, a, photo):
     t = T[L]; name = esc(a["name"])
-    img = (f'<img src="{photo}" alt="{t["artist_ph"]} {name}" loading="lazy">' if photo else f'<div class="fallback"><span class="chip"></span><b>{name}</b></div>')
+    img = (f'<img src="{photo}"{rimg(photo, SZ_CARD)} alt="{t["artist_ph"]} {name}" loading="lazy">' if photo else f'<div class="fallback"><span class="chip"></span><b>{name}</b></div>')
     return (f'<a class="acard" href="{pre(L)}/agency/{a["slug"]}/"><div class="art brk">{img}</div>'
             f'<div class="cap"><span>{name}</span></div></a>')
 
@@ -394,8 +422,8 @@ def artist_page(L, a, photo):
     links += "".join(f'<a class="btn" href="{esc(x["url"])}" target="_blank" rel="noopener">{esc(x["label"])} ↗</a>' for x in a.get("links_extra", []))
     bio = "".join(f"<p>{esc(x)}</p>" for x in str(loc(a, "bio", L)).split("\n\n") if x.strip())
     img = f'<div class="aphoto brk"><img src="{photo}"{dims(photo)} alt="{t["artist_ph"]} {name}"></div>' if photo else ""
-    body = f'''{topbar(L, rel, "agency")}<main class="wrap">
-<nav class="crumb micro"><a href="{pre(L)}/agency/">{t["back_roster"]}</a></nav>
+    body = f'''{topbar(L, rel, "agency")}<main id="main" class="wrap">
+<nav class="crumb micro" aria-label="{t['route']}"><a href="{pre(L)}/agency/">{t["back_roster"]}</a></nav>
 <article class="aview">{img}<div class="atext"><span class="micro">{esc(loc(a, "role", L))}</span>
 <h1>{name}</h1>{bio}<div class="alinks">{book}{links}</div></div></article>{extras}</main>{footer()}'''
     d = str(loc(a, "bio", L)).split("\n")[0][:150]
@@ -404,7 +432,7 @@ def artist_page(L, a, photo):
 def agency_page(L, photos):
     t = T[L]
     roster = "".join(artist_card(L, a, photos[a["slug"]]) for a in ARTISTS)
-    body = f'''{topbar(L, "/agency/", "agency")}<main class="wrap">
+    body = f'''{topbar(L, "/agency/", "agency")}<main id="main" class="wrap">
 {head(t['agency_kicker'], "Agency", esc(t['agency_intro'].format(c=SITE['contact'])), sec="agency")}
 <section class="roster" aria-label="Agency">{roster}</section></main>{footer()}'''
     return page(L, "Agency · esτocasτic", t["agency_desc"], body, "/agency/")
@@ -416,8 +444,8 @@ def home_page(L, counts):
     rows += [("https://soundcloud.com/estocastic", "SoundCloud", "estocastic ↗", True), ("https://www.instagram.com/estocastic_/", "Instagram", "@estocastic_ ↗", True)]
     nav = "".join(f'<a href="{h}"{BLANK if ext else ""}><span class="n">{i:02d}</span><span class="t">{n}</span><span class="s">{esc(s)}{"" if ext else " →"}</span></a>'
                   for i, (h, n, s, ext) in enumerate(rows, 1))
-    body = f'''{topbar(L, "/")}<main class="wrap narrow">
-<header class="hero"><img class="mark" src="/symbol.png" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
+    body = f'''{topbar(L, "/")}<main id="main" class="wrap narrow">
+<header class="hero"><img class="mark" src="/symbol.png" srcset="/symbol-s.png 480w, /symbol.png 800w" sizes="(max-width:480px) 44vw, 210px" width="800" height="595" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
 <nav class="index brk" aria-label="{t['links']}">{nav}</nav></main>{footer()}'''
     return page(L, t["home_title"], t["home_desc"], body, "/", ld=org_ld())
 
@@ -438,7 +466,7 @@ def links_page(L):
     sw = "".join(f'<a href="{pre(l)}/linktree/" hreflang="{l}" lang="{l}"{ARIA_TRUE if l == L else ""}>{l.upper()}</a>' for l in LANGS)
     body = f'''<main class="wrap narrow lkpage">
 <div class="lklang"><span class="lang">{sw}</span></div>
-<header class="hero"><img class="mark" src="/symbol.png" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
+<header class="hero"><img class="mark" src="/symbol.png" srcset="/symbol-s.png 480w, /symbol.png 800w" sizes="(max-width:480px) 44vw, 210px" width="800" height="595" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
 <nav class="lklist" aria-label="{t['links']}">{rows}</nav>
 <footer class="foot"><span class="slogan">Let waveforms collapse</span><span class="micro">@estocastic_</span></footer></main>'''
     return page(L, "esτocasτic · Links", t["home_desc"], body, "/linktree/")
@@ -461,7 +489,7 @@ def main():
 
     def write(L, rel, content):
         ensure(ROOT / (pre(L).strip("/") or ".") / rel.strip("/") / "index.html").write_text(content, encoding="utf-8")
-    make_og()
+    make_og(); make_symbol_small()
     for L in LANGS:
         write(L, "", home_page(L, counts))
         write(L, "linktree", links_page(L))

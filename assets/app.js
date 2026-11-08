@@ -1,7 +1,7 @@
 (function(){
   var mb=document.querySelector('.menu-btn'),mn=document.getElementById('menu');
   if(mb&&mn)mb.addEventListener('click',function(){var o=mn.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
-  if(mb&&mn){document.addEventListener('click',function(e){if(mn.classList.contains('open')&&!mn.contains(e.target)&&e.target!==mb){mn.classList.remove('open');mb.setAttribute('aria-expanded','false')}});document.addEventListener('keydown',function(e){if(e.key==='Escape'){mn.classList.remove('open');mb.setAttribute('aria-expanded','false')}})}
+  if(mb&&mn){document.addEventListener('click',function(e){if(mn.classList.contains('open')&&!mn.contains(e.target)&&e.target!==mb){mn.classList.remove('open');mb.setAttribute('aria-expanded','false')}});document.addEventListener('keydown',function(e){if(e.key==='Escape'){var was=mn.classList.contains('open'),inside=mn.contains(document.activeElement);mn.classList.remove('open');mb.setAttribute('aria-expanded','false');if(was&&inside)mb.focus()}})}
 
   var KEY='est_unlocked_v1';
   function get(){try{return localStorage.getItem(KEY)==='1'}catch(e){return false}}
@@ -20,8 +20,10 @@
       dl.href=a.getAttribute('data-full');dl.setAttribute('download',a.getAttribute('data-name'));
       [1,-1].forEach(function(d){var p=links[(i+d+links.length)%links.length];(new Image()).src=p.getAttribute('data-full')});
     }
-    function open(n){last=document.activeElement;show(n);lb.classList.add('open');document.body.style.overflow='hidden';lb.querySelector('.x').focus()}
-    function close(){lb.classList.remove('open');document.body.style.overflow='';img.removeAttribute('src');if(last)last.focus()}
+    /* el resto de la página queda inerte mientras el visor está abierto (foco y lectores de pantalla) */
+    function setInert(on){[].forEach.call(document.body.children,function(el){if(el===lb||el.tagName==='SCRIPT')return;if(on)el.setAttribute('inert','');else el.removeAttribute('inert')})}
+    function open(n){last=document.activeElement;show(n);lb.classList.add('open');document.body.style.overflow='hidden';setInert(true);lb.querySelector('.x').focus()}
+    function close(){lb.classList.remove('open');document.body.style.overflow='';img.removeAttribute('src');setInert(false);if(last)last.focus()}
     links.forEach(function(a,n){a.addEventListener('click',function(e){e.preventDefault();open(n)})});
     lb.querySelector('.x').addEventListener('click',close);
     lb.querySelector('.prev').addEventListener('click',function(){show(i-1)});
