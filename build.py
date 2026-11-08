@@ -110,7 +110,15 @@ def dims(url):
     except OSError: return ""
 
 SZ_CARD = "(max-width:520px) 100vw, 240px"   # tarjetas (Label, Agency, Community)
-SZ_WALL = "(max-width:520px) 50vw, (max-width:700px) 33vw, 20vw"    # muro de carteles (Events)
+SZ_WALL = "(max-width:520px) 50vw, (max-width:700px) 33vw, calc(min(100vw, 1040px) / {cols})"    # muro de carteles (Events)
+
+def wall_cols(n, lo=4, hi=8, ideal=5):
+    """Columnas del muro de carteles en escritorio: el divisor de n (entre lo y hi) más cercano a `ideal`,
+    para que todas las filas lleven el mismo número de carteles. Si no hay (n primo, etc.), la
+    última fila incompleta que deje menos huecos (mínimo `lo` por fila)."""
+    div = [c for c in range(lo, hi + 1) if n >= c and n % c == 0]
+    if div: return min(div, key=lambda c: (abs(c - ideal), c))
+    return min(range(lo, 7), key=lambda c: ((-n) % c if n >= c else 99, abs(c - ideal), c))
 def rimg(url, sizes, widths=(480, 800)):
     """srcset/sizes/width/height: crea copias reducidas en media/<dir>/w<N>/ a partir de la imagen ya optimizada."""
     src = ROOT / (url[len(MB):] if MB and url.startswith(MB) else url).lstrip("/")
@@ -342,9 +350,11 @@ def events_page(L, public, counts, fiestas):
     t = T[L]
     linked = [(e["_poster"], f'{pre(L)}/community/{e["slug"]}/', loc(e, "title", L)) for e in public if e.get("_poster") and counts[e["slug"]]]
     plain = [e["_poster"] for e in public if e.get("_poster") and not counts[e["slug"]]] + list(reversed(fiestas))
-    items = "".join(f'<a class="pw" href="{h}" title="{esc(n)}"><img src="{u}"{rimg(u, SZ_WALL)} alt="{t["poster"]} {esc(n)}" loading="lazy"></a>' for u, h, n in linked)
-    items += "".join(f'<a class="ph pw" href="{u}" data-full="{u}" data-name="estocastic-cartel-{n:02d}.jpg"><img src="{u}"{rimg(u, SZ_WALL)} alt="{t["fiestas_alt"]} {n:02d}" loading="lazy"></a>' for n, u in enumerate(plain, 1))
-    wall = f'<section class="sec"><div class="wall">{items}</div></section>' if items else ""
+    cols = wall_cols(len(linked) + len(plain))
+    sz = SZ_WALL.format(cols=cols)
+    items = "".join(f'<a class="pw" href="{h}" title="{esc(n)}"><img src="{u}"{rimg(u, sz)} alt="{t["poster"]} {esc(n)}" loading="lazy"></a>' for u, h, n in linked)
+    items += "".join(f'<a class="ph pw" href="{u}" data-full="{u}" data-name="estocastic-cartel-{n:02d}.jpg"><img src="{u}"{rimg(u, sz)} alt="{t["fiestas_alt"]} {n:02d}" loading="lazy"></a>' for n, u in enumerate(plain, 1))
+    wall = f'<section class="sec"><div class="wall" style="--cols:{cols}">{items}</div></section>' if items else ""
     fiestas = plain
     body = f'''{topbar(L, "/events/", "events")}<main id="main" class="wrap">
 {head(t['events_kicker'], "Events", esc(t['events_intro']), sec="events")}
