@@ -66,4 +66,18 @@
         .then(done).catch(function(){btn.disabled=false;msg.textContent=M.fail||'Error'});
     });
   }
+
+  /* ---------- home: faders en reposo con deriva estocástica ---------- */
+  var chs=[].slice.call(document.querySelectorAll('.ch'));
+  if(chs.length){
+    var calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var base=[];try{base=JSON.parse(sessionStorage.getItem('est_lv')||'[]')}catch(e){}
+    if(base.length!==chs.length){base=chs.map(function(){return +(0.15+Math.random()*0.65).toFixed(2)});try{sessionStorage.setItem('est_lv',JSON.stringify(base))}catch(e){}}
+    chs.forEach(function(c,n){c.style.setProperty('--lvl',base[n])});
+    if(!calm)setInterval(function(){
+      var c=chs[Math.floor(Math.random()*chs.length)],n=chs.indexOf(c);
+      if(c.matches(':hover,:focus-visible'))return;
+      base[n]=Math.min(.85,Math.max(.12,base[n]+(Math.random()-.5)*.3));c.style.setProperty('--lvl',base[n].toFixed(2));
+    },1400);
+  }
 })();

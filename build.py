@@ -224,7 +224,7 @@ def topbar(L, rel, section=None):
 def footer(note=""):
     n = f'<span class="micro">{esc(note)}</span>' if note else ""
     return f'''<div class="wrap"><footer class="foot">
-{n}{barcode()}<span class="slogan">Let waveforms collapse</span>
+{n}{barcode()}<img class="foot-mark" src="/symbol-white.png" alt="" width="480" height="352" loading="lazy"><span class="slogan">Let waveforms collapse</span>
 <span class="micro">@estocastic_ · <a href="mailto:{SITE['contact']}">{SITE['contact']}</a></span>
 <span class="micro">BCN · 41.39 N / 2.17 E · REF EST—2026</span></footer></div>'''
 
@@ -438,13 +438,17 @@ def agency_page(L, photos):
 # ---------- HOME ----------
 def home_page(L, counts):
     t = T[L]
-    rows = [(f"{pre(L)}/{s}/", s.upper(), t["subs"][s], False) for s in SECTIONS]
-    rows += [("https://soundcloud.com/estocastic", "SoundCloud", "estocastic ↗", True), ("https://www.instagram.com/estocastic_/", "Instagram", "@estocastic_ ↗", True)]
-    nav = "".join(f'<a href="{h}"{BLANK if ext else ""}><span class="n">{i:02d}</span><span class="t">{n}</span><span class="s">{esc(s)}{"" if ext else " →"}</span></a>'
-                  for i, (h, n, s, ext) in enumerate(rows, 1))
-    body = f'''{topbar(L, "/")}<main id="main" class="wrap narrow">
-<header class="hero"><img class="mark" src="/symbol.png" srcset="/symbol-s.png 480w, /symbol.png 800w" sizes="(max-width:480px) 44vw, 210px" width="800" height="595" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
-<nav class="index brk" aria-label="{t['links']}">{nav}</nav></main>{footer()}'''
+    chans = "".join(
+        f'<a class="ch" href="{pre(L)}/{sec}/"><span class="ch-n">{sec.upper()}</span>'
+        f'<span class="ch-rail" aria-hidden="true"><i class="ch-led"></i><img class="ch-cap" src="/symbol-s.png" alt="" width="480" height="357"></span>'
+        f'<span class="ch-s">{esc(t["subs"][sec])}</span></a>'
+        for sec in SECTIONS)
+    ext = (f'<a href="https://soundcloud.com/estocastic"{BLANK}>SoundCloud ↗</a>'
+           f'<a href="https://www.instagram.com/estocastic_/"{BLANK}>Instagram ↗</a>')
+    body = f'''{topbar(L, "/")}<main id="main" class="wrap home">
+<header class="hero"><img class="mark" src="/symbol.png" srcset="/symbol-s.png 480w, /symbol.png 800w" sizes="(max-width:480px) 52vw, 300px" width="800" height="595" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
+<nav class="desk brk" aria-label="{t['links']}">{chans}</nav>
+<p class="ext micro">{ext}</p></main>{footer()}'''
     return page(L, t["home_title"], t["home_desc"], body, "/", ld=org_ld())
 
 # ---------- LINKS (enlace de bio, estilo linktree) ----------

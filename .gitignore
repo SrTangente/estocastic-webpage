@@ -2,3 +2,8 @@ source/
 __pycache__/
 *.zip
 .claude/
+
+# Impeccable: archivos de trabajo
+.impeccable/mocks/
+.impeccable/questions/
+.impeccable/review/
