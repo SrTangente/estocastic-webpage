@@ -105,7 +105,7 @@ def dims(url):
     except OSError: return ""
 
 SZ_CARD = "(max-width:520px) 100vw, 240px"   # tarjetas (Label, Agency, Community)
-SZ_WALL = "(max-width:520px) 50vw, 170px"    # muro de carteles (Events)
+SZ_WALL = "(max-width:520px) 50vw, (max-width:700px) 33vw, 20vw"    # muro de carteles (Events)
 def rimg(url, sizes, widths=(480, 800)):
     """srcset/sizes/width/height: crea copias reducidas en media/<dir>/w<N>/ a partir de la imagen ya optimizada."""
     src = ROOT / (url[len(MB):] if MB and url.startswith(MB) else url).lstrip("/")
