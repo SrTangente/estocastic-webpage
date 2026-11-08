@@ -451,7 +451,7 @@ def home_page(L, counts):
     t = T[L]
     chans = "".join(
         f'<a class="ch" href="{pre(L)}/{sec}/"><span class="ch-n">{sec.upper()}</span>'
-        f'<span class="ch-rail" aria-hidden="true"><i class="ch-led"></i><img class="ch-cap" src="/symbol-s.png" alt="" width="480" height="357"></span>'
+        f'<span class="ch-rail" aria-hidden="true"><i class="ch-led"></i><b class="ch-cap"></b></span>'
         f'<span class="ch-s">{esc(t["subs"][sec])}</span></a>'
         for sec in SECTIONS)
     ext = (f'<a href="https://soundcloud.com/estocastic"{BLANK}>SoundCloud ↗</a>'
