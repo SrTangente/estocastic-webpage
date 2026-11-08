@@ -51,7 +51,7 @@ T = {
    fine="Responsable: {ctl}. Finalidad: enviarte la newsletter y darte acceso a las fotos. Legitimación: tu consentimiento. Derechos de acceso, rectificación y supresión (y baja): {c}.",
    close="Cerrar ✕", prev="Anterior", next="Siguiente", dl="Descargar ↓", viewer="Visor de fotos", route="Ruta", links="Enlaces", events="Eventos",
    m_email="Revisa el correo.", m_consent="Debes aceptar para continuar.", m_na="Formulario no disponible ahora mismo.", m_fail="No se ha podido enviar. Inténtalo de nuevo.",
-   symbol="Símbolo de esτocasτic", home_desc="esτocasτic — Let waveforms collapse. Label, About, Shop, Agency y Community.", home_sub_photos="Fotos de las fiestas",
+   symbol="Símbolo de esτocasτic", home_title="esτocasτic — Colectivo de música electrónica · Barcelona", home_desc="Colectivo y label de música electrónica en Barcelona. Mixes, radio, artistas y fiestas. Let waveforms collapse.", home_sub_photos="Fotos de las fiestas",
    subs=dict(label="Mixes · Radio", about="Manifiesto", shop="Pronto", agency="Artistas", events="Carteles · Fiestas", community="Fotos · Vídeo")),
  "en": dict(html="en", menu="Menu",
    events_kicker="Events · Eventos — 05", events_intro="", events_desc="esτocasτic party posters and photos.",
@@ -71,9 +71,10 @@ T = {
    fine="Controller: {ctl}. Purpose: sending you the newsletter and giving you access to the photos. Legal basis: your consent. Rights of access, rectification and erasure (and unsubscribing): {c}.",
    close="Close ✕", prev="Previous", next="Next", dl="Download ↓", viewer="Photo viewer", route="Breadcrumb", links="Links", events="Events",
    m_email="Check your email address.", m_consent="You need to accept to continue.", m_na="The form is not available right now.", m_fail="Could not send. Please try again.",
-   symbol="esτocasτic symbol", home_desc="esτocasτic — Let waveforms collapse. Label, About, Shop, Agency and Community.", home_sub_photos="Party photos",
+   symbol="esτocasτic symbol", home_title="esτocasτic — Electronic music collective · Barcelona", home_desc="Electronic music collective and label in Barcelona. Mixes, radio, artists and parties. Let waveforms collapse.", home_sub_photos="Party photos",
    subs=dict(label="Mixes · Radio", about="Manifesto", shop="Soon", agency="Artists", events="Posters · Parties", community="Photos · Video")),
 }
+ARIA_PAGE, ARIA_TRUE, BLANK = ' aria-current="page"', ' aria-current="true"', ' target="_blank" rel="noopener"'  # (compat. Python < 3.12)
 def pre(L): return "" if L == "es" else "/en"
 def loc(d, key, L):
     return d.get(f"{key}_en", d.get(key, "")) if L == "en" else d.get(key, "")
@@ -97,6 +98,12 @@ def out_img(subdir, stem, maxdim, q=84, dest_sub=None):
         im.save(ensure(dest), "JPEG", quality=q, optimize=True, progressive=True)
     return f"{MB}/media/{d}/{stem}.jpg"
 
+def dims(url):
+    """' width=".." height=".."' de una imagen ya optimizada en media/ (evita saltos de maquetación)."""
+    try:
+        with Image.open(ROOT / (url[len(MB):] if MB and url.startswith(MB) else url).lstrip("/")) as im: return f' width="{im.width}" height="{im.height}"'
+    except OSError: return ""
+
 def process_photos(ev):
     d = ev["secret"] if ev.get("exclusive") else ev["slug"]
     folder = SRC / ev["slug"]
@@ -115,24 +122,65 @@ def process_photos(ev):
 def acc(ev): return f"var(--{ev.get('accent', 'yin')})"
 def code(ev): return ev["slug"].upper().replace("-", "·")
 
+# ---------- imagen para compartir (og.jpg) ----------
+def make_og():
+    """1200x630: símbolo + logo sobre el fondo de la web. Se regenera solo si cambian symbol.png/logo.png."""
+    dest = ROOT / "og.jpg"
+    if newer(dest, ROOT / "symbol.png") and newer(dest, ROOT / "logo.png"): return
+    im = Image.new("RGB", (1200, 630), (10, 10, 13))
+    sym = Image.open(ROOT / "symbol.png").convert("RGBA"); sym.thumbnail((520, 340), Image.LANCZOS)
+    logo = Image.open(ROOT / "logo.png").convert("RGBA"); logo.thumbnail((760, 200), Image.LANCZOS)
+    im.paste(sym, ((1200 - sym.width) // 2, 70), sym)
+    im.paste(logo, ((1200 - logo.width) // 2, 70 + sym.height + 50), logo)
+    im.save(dest, "JPEG", quality=88, optimize=True, progressive=True)
+
+# ---------- datos estructurados (JSON-LD) ----------
+def jsonld(data, noindex=False):
+    if not data or noindex: return ""
+    return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False).replace("</", "<\\/") + "</script>"
+def same_as(links): return [u for u in links if u]
+def org_ld():
+    return {"@context": "https://schema.org", "@type": "MusicGroup", "name": "esτocasτic", "url": SITE["domain"] + "/",
+            "logo": SITE["domain"] + "/logo.png", "image": SITE["domain"] + "/og.jpg",
+            "location": {"@type": "Place", "address": {"@type": "PostalAddress", "addressLocality": "Barcelona", "addressCountry": "ES"}},
+            "genre": "Electronic", "sameAs": ["https://soundcloud.com/estocastic", "https://www.instagram.com/estocastic_/"]}
+def artist_ld(L, a, photo):
+    d = {"@context": "https://schema.org", "@type": "MusicGroup", "name": a["name"], "url": f"{SITE['domain']}{pre(L)}/agency/{a['slug']}/",
+         "description": str(loc(a, "bio", L)).split("\n\n")[0], "memberOf": {"@type": "MusicGroup", "name": "esτocasτic", "url": SITE["domain"] + "/"},
+         "sameAs": same_as(a.get("links", {}).values())}
+    if photo and not MB: d["image"] = SITE["domain"] + photo
+    return d
+def event_ld(L, ev, photos):
+    """Event de schema.org para un evento ya celebrado (no cancelado, no exclusivo)."""
+    start = ev["date"] + ("T" + ev["time"].split("–")[0] + ":00" if ev.get("time") else "")
+    end = (ev["date"] + "T" + ev["time"].split("–")[1] + ":00") if ev.get("time") and "–" in ev["time"] else None
+    d = {"@context": "https://schema.org", "@type": "MusicEvent", "name": loc(ev, "title", L), "startDate": start,
+         "eventStatus": "https://schema.org/EventScheduled", "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+         "location": {"@type": "Place", "name": loc(ev, "venue", L), "address": {"@type": "PostalAddress", "addressLocality": "Barcelona", "addressCountry": "ES"}},
+         "organizer": {"@type": "Organization", "name": "esτocasτic", "url": SITE["domain"] + "/"},
+         "url": f"{SITE['domain']}{pre(L)}/community/{ev['slug']}/"}
+    if end: d["endDate"] = end
+    if ev.get("lineup"): d["performer"] = [{"@type": "MusicGroup", "name": x.strip()} for x in ev["lineup"].split("·") if x.strip()]
+    if photos and not MB: d["image"] = SITE["domain"] + photos[0]["thumb"]
+    return d
+
 # ---------- layout ----------
-def page(L, title, desc, body, rel, noindex=False, og_image="/symbol.png"):
+def page(L, title, desc, body, rel, noindex=False, og_image="/og.jpg", ld=None):
     t = T[L]; url = SITE["domain"] + pre(L) + rel
     alts = "" if noindex else "".join(f'<link rel="alternate" hreflang="{l}" href="{SITE["domain"]}{pre(l)}{rel}">' for l in LANGS) \
         + f'<link rel="alternate" hreflang="x-default" href="{SITE["domain"]}{rel}">'
     robots = '<meta name="robots" content="noindex,nofollow">' if noindex else ""
     og = "" if noindex else f'''<meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}">
-<meta property="og:image" content="{SITE['domain']}{og_image}"><meta name="twitter:card" content="summary">'''
+<meta property="og:image" content="{SITE['domain']}{og_image}"><meta name="twitter:card" content="{"summary_large_image" if og_image == "/og.jpg" else "summary"}">'''
     cfg = json.dumps({"endpoint": SITE.get("endpoint", ""), "m": {k[2:]: t[k] for k in t if k.startswith("m_")}})
     return f'''<!doctype html>
 <html lang="{t['html']}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><meta name="theme-color" content="#0a0a0d">
-{robots}{alts}{og}<link rel="icon" type="image/png" href="/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="/assets/style.css">
+{robots}{alts}{og}{jsonld(ld, noindex)}<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/syne-latin.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="/assets/fonts/jetbrains-mono-latin.woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts.css"><link rel="stylesheet" href="/assets/style.css">
 </head><body>
 {body}
 <script>window.EST={cfg};</script><script src="/assets/app.js" defer></script><script src="/assets/bg.js" defer></script>
@@ -140,8 +188,8 @@ def page(L, title, desc, body, rel, noindex=False, og_image="/symbol.png"):
 
 def topbar(L, rel, section=None):
     t = T[L]
-    items = "".join(f'<a href="{pre(L)}/{s}/"{" aria-current=\"page\"" if s == section else ""}>{s.upper()}</a>' for s in SECTIONS)
-    sw = "".join(f'<a href="{pre(l)}{rel}" hreflang="{l}" lang="{l}"{" aria-current=\"true\"" if l == L else ""}>{l.upper()}</a>' for l in LANGS)
+    items = "".join(f'<a href="{pre(L)}/{s}/"{ARIA_PAGE if s == section else ""}>{s.upper()}</a>' for s in SECTIONS)
+    sw = "".join(f'<a href="{pre(l)}{rel}" hreflang="{l}" lang="{l}"{ARIA_TRUE if l == L else ""}>{l.upper()}</a>' for l in LANGS)
     return f'''<div class="wrap top"><div class="bar">
 <a class="brand" href="{pre(L)}/" aria-label="esτocasτic"><img src="/logo.png" alt="esτocasτic"></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">{t['menu']}</button>
@@ -242,7 +290,7 @@ def event_page(L, ev, photos, ex=None):
 {video_block(L, ev)}{grid}
 {gate(L, ex) if (ex and not exclusive and SHOW_GATE) else ""}
 </main>{footer(t['takedown'].format(c=SITE['contact']) if photos and not exclusive else '')}{lightbox(L) if photos else ""}'''
-    return page(L, f"{title} · esτocasτic", t["ev_desc"].format(t=title, v=loc(ev, "venue", L)), body, rel, noindex=bool(exclusive))
+    return page(L, f"{title} · esτocasτic", t["ev_desc"].format(t=title, v=loc(ev, "venue", L)), body, rel, noindex=bool(exclusive), ld=event_ld(L, ev, photos))
 
 def community_page(L, public, counts, ex, photos):
     t = T[L]
@@ -300,7 +348,7 @@ def label_page(L, covers, radio):
 def about_page(L, group):
     t = T[L]; a = CONTENT.get("about", {})
     man = "".join(f"<p>{esc(x)}</p>" for x in (a.get("manifesto_en") if L == "en" else a.get("manifesto", [])))
-    img = f'<figure class="group brk"><img src="{group}" alt="esτocasτic &amp; friends" loading="lazy"></figure>' if group else ""
+    img = f'<figure class="group brk"><img src="{group}"{dims(group)} alt="esτocasτic &amp; friends" loading="lazy"></figure>' if group else ""
     body = f'''{topbar(L, "/about/", "about")}<main class="wrap">
 {head(t['about_kicker'], "About", sec="about")}
 <section class="defn brk"><b>{esc(a.get("term",""))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></section>
@@ -339,19 +387,19 @@ def artist_card(L, a, photo):
 def artist_page(L, a, photo):
     t = T[L]; rel = f"/agency/{a['slug']}/"
     name = esc(a["name"]) + (f' ({esc(a["country"])})' if a.get("country") else "")
-    extras = "".join(f'<img src="{u}" alt="{t["artist_ph"]} {name}" loading="lazy">' for u in artist_extras(a))
+    extras = "".join(f'<img src="{u}"{dims(u)} alt="{t["artist_ph"]} {name}" loading="lazy">' for u in artist_extras(a))
     extras = f'<section class="agal">{extras}</section>' if extras else ""
     book = f'<a class="btn solid" style="--acc:var(--yin)" href="mailto:{SITE["contact"]}?subject=Booking%20-%20{esc(a["name"]).replace(" ", "%20")}">{t["book"]} →</a>'
     links = "".join(f'<a class="btn" href="{esc(a["links"][k])}" target="_blank" rel="noopener">{lab} ↗</a>' for k, lab in LINK_LABELS if a.get("links", {}).get(k))
     links += "".join(f'<a class="btn" href="{esc(x["url"])}" target="_blank" rel="noopener">{esc(x["label"])} ↗</a>' for x in a.get("links_extra", []))
     bio = "".join(f"<p>{esc(x)}</p>" for x in str(loc(a, "bio", L)).split("\n\n") if x.strip())
-    img = f'<div class="aphoto brk"><img src="{photo}" alt="{t["artist_ph"]} {name}"></div>' if photo else ""
+    img = f'<div class="aphoto brk"><img src="{photo}"{dims(photo)} alt="{t["artist_ph"]} {name}"></div>' if photo else ""
     body = f'''{topbar(L, rel, "agency")}<main class="wrap">
 <nav class="crumb micro"><a href="{pre(L)}/agency/">{t["back_roster"]}</a></nav>
 <article class="aview">{img}<div class="atext"><span class="micro">{esc(loc(a, "role", L))}</span>
 <h1>{name}</h1>{bio}<div class="alinks">{book}{links}</div></div></article>{extras}</main>{footer()}'''
     d = str(loc(a, "bio", L)).split("\n")[0][:150]
-    return page(L, f"{a['name']} · esτocasτic", d or t["agency_desc"], body, rel, og_image=(photo if photo and not MB else "/symbol.png"))
+    return page(L, f"{a['name']} · esτocasτic", d or t["agency_desc"], body, rel, og_image=(photo if photo and not MB else "/og.jpg"), ld=artist_ld(L, a, photo))
 
 def agency_page(L, photos):
     t = T[L]
@@ -366,12 +414,12 @@ def home_page(L, counts):
     t = T[L]
     rows = [(f"{pre(L)}/{s}/", s.upper(), t["subs"][s], False) for s in SECTIONS]
     rows += [("https://soundcloud.com/estocastic", "SoundCloud", "estocastic ↗", True), ("https://www.instagram.com/estocastic_/", "Instagram", "@estocastic_ ↗", True)]
-    nav = "".join(f'<a href="{h}"{" target=\"_blank\" rel=\"noopener\"" if ext else ""}><span class="n">{i:02d}</span><span class="t">{n}</span><span class="s">{esc(s)}{"" if ext else " →"}</span></a>'
+    nav = "".join(f'<a href="{h}"{BLANK if ext else ""}><span class="n">{i:02d}</span><span class="t">{n}</span><span class="s">{esc(s)}{"" if ext else " →"}</span></a>'
                   for i, (h, n, s, ext) in enumerate(rows, 1))
     body = f'''{topbar(L, "/")}<main class="wrap narrow">
 <header class="hero"><img class="mark" src="/symbol.png" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
 <nav class="index brk" aria-label="{t['links']}">{nav}</nav></main>{footer()}'''
-    return page(L, "esτocasτic", t["home_desc"], body, "/")
+    return page(L, t["home_title"], t["home_desc"], body, "/", ld=org_ld())
 
 # ---------- LINKS (enlace de bio, estilo linktree) ----------
 def links_page(L):
@@ -387,7 +435,7 @@ def links_page(L):
         cls = "lk primary" if x.get("primary") else "lk"
         tag = f'<span class="tag">{esc(x["tag"])}</span>' if x.get("tag") else ""
         rows += f'<a class="{cls}" href="{esc(href)}"{ext}><span class="l">{esc(label)}{tag}</span><span class="s">{esc(sub.replace("{contact}", SITE["contact"]))} {arrow}</span></a>'
-    sw = "".join(f'<a href="{pre(l)}/linktree/" hreflang="{l}" lang="{l}"{" aria-current=\"true\"" if l == L else ""}>{l.upper()}</a>' for l in LANGS)
+    sw = "".join(f'<a href="{pre(l)}/linktree/" hreflang="{l}" lang="{l}"{ARIA_TRUE if l == L else ""}>{l.upper()}</a>' for l in LANGS)
     body = f'''<main class="wrap narrow lkpage">
 <div class="lklang"><span class="lang">{sw}</span></div>
 <header class="hero"><img class="mark" src="/symbol.png" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
@@ -413,6 +461,7 @@ def main():
 
     def write(L, rel, content):
         ensure(ROOT / (pre(L).strip("/") or ".") / rel.strip("/") / "index.html").write_text(content, encoding="utf-8")
+    make_og()
     for L in LANGS:
         write(L, "", home_page(L, counts))
         write(L, "linktree", links_page(L))
@@ -428,8 +477,11 @@ def main():
         if ex and SHOW_GATE: write(L, f"s/{SITE['secret']}", event_page(L, ex, photos[ex["slug"]]))
     (ROOT / "robots.txt").write_text(f"User-agent: *\nDisallow: /s/\nDisallow: /en/s/\nSitemap: {SITE['domain']}/sitemap.xml\n", encoding="utf-8")
     rels = ["/"] + [f"/{s}/" for s in SECTIONS] + [f"/agency/{a['slug']}/" for a in ARTISTS] + [f"/community/{e['slug']}/" for e in public if counts[e["slug"]]]
-    (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-        "".join(f"<url><loc>{SITE['domain']}{pre(L)}{r}</loc></url>\n" for L in LANGS for r in rels) + "</urlset>\n", encoding="utf-8")
+    def smap(L, r):
+        alt = "".join(f'<xhtml:link rel="alternate" hreflang="{l}" href="{SITE["domain"]}{pre(l)}{r}"/>' for l in LANGS)
+        return f"<url><loc>{SITE['domain']}{pre(L)}{r}</loc>{alt}</url>\n"
+    (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
+        "".join(smap(L, r) for L in LANGS for r in rels) + "</urlset>\n", encoding="utf-8")
     if not SITE.get("endpoint"): print("AVISO: site.json 'endpoint' vacío -> el formulario solo funciona en localhost.")
     print(f"OK: {sum(counts[e['slug']] for e in public)} fotos públicas, {len(public)} eventos, {len(ARTISTS)} artistas, {len(RELEASES)} releases.")
 

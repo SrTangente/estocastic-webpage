@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://estocastic.xyz/</loc></url>
-<url><loc>https://estocastic.xyz/label/</loc></url>
-<url><loc>https://estocastic.xyz/about/</loc></url>
-<url><loc>https://estocastic.xyz/shop/</loc></url>
-<url><loc>https://estocastic.xyz/agency/</loc></url>
-<url><loc>https://estocastic.xyz/events/</loc></url>
-<url><loc>https://estocastic.xyz/community/</loc></url>
-<url><loc>https://estocastic.xyz/agency/akagat/</loc></url>
-<url><loc>https://estocastic.xyz/agency/klim/</loc></url>
-<url><loc>https://estocastic.xyz/agency/neopreno/</loc></url>
-<url><loc>https://estocastic.xyz/agency/tangente/</loc></url>
-<url><loc>https://estocastic.xyz/community/yin-gathering/</loc></url>
-<url><loc>https://estocastic.xyz/en/</loc></url>
-<url><loc>https://estocastic.xyz/en/label/</loc></url>
-<url><loc>https://estocastic.xyz/en/about/</loc></url>
-<url><loc>https://estocastic.xyz/en/shop/</loc></url>
-<url><loc>https://estocastic.xyz/en/agency/</loc></url>
-<url><loc>https://estocastic.xyz/en/events/</loc></url>
-<url><loc>https://estocastic.xyz/en/community/</loc></url>
-<url><loc>https://estocastic.xyz/en/agency/akagat/</loc></url>
-<url><loc>https://estocastic.xyz/en/agency/klim/</loc></url>
-<url><loc>https://estocastic.xyz/en/agency/neopreno/</loc></url>
-<url><loc>https://estocastic.xyz/en/agency/tangente/</loc></url>
-<url><loc>https://estocastic.xyz/en/community/yin-gathering/</loc></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<url><loc>https://estocastic.xyz/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/"/></url>
+<url><loc>https://estocastic.xyz/label/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/label/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/label/"/></url>
+<url><loc>https://estocastic.xyz/about/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/about/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/about/"/></url>
+<url><loc>https://estocastic.xyz/shop/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/shop/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/shop/"/></url>
+<url><loc>https://estocastic.xyz/agency/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/agency/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/agency/"/></url>
+<url><loc>https://estocastic.xyz/events/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/events/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/events/"/></url>
+<url><loc>https://estocastic.xyz/community/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/community/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/community/"/></url>
+<url><loc>https://estocastic.xyz/agency/akagat/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/agency/akagat/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/agency/akagat/"/></url>
+<url><loc>https://estocastic.xyz/agency/klim/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/agency/klim/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/agency/klim/"/></url>
+<url><loc>https://estocastic.xyz/agency/neopreno/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/agency/neopreno/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/agency/neopreno/"/></url>
+<url><loc>https://estocastic.xyz/agency/tangente/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/agency/tangente/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/agency/tangente/"/></url>
+<url><loc>https://estocastic.xyz/community/yin-gathering/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/community/yin-gathering/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/community/yin-gathering/"/></url>
+<url><loc>https://estocastic.xyz/en/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/"/></url>
+<url><loc>https://estocastic.xyz/en/label/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/label/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/label/"/></url>
+<url><loc>https://estocastic.xyz/en/about/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/about/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/about/"/></url>
+<url><loc>https://estocastic.xyz/en/shop/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/shop/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/shop/"/></url>
+<url><loc>https://estocastic.xyz/en/agency/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/agency/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/agency/"/></url>
+<url><loc>https://estocastic.xyz/en/events/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/events/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/events/"/></url>
+<url><loc>https://estocastic.xyz/en/community/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/community/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/community/"/></url>
+<url><loc>https://estocastic.xyz/en/agency/akagat/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/agency/akagat/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/agency/akagat/"/></url>
+<url><loc>https://estocastic.xyz/en/agency/klim/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/agency/klim/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/agency/klim/"/></url>
+<url><loc>https://estocastic.xyz/en/agency/neopreno/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/agency/neopreno/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/agency/neopreno/"/></url>
+<url><loc>https://estocastic.xyz/en/agency/tangente/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/agency/tangente/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/agency/tangente/"/></url>
+<url><loc>https://estocastic.xyz/en/community/yin-gathering/</loc><xhtml:link rel="alternate" hreflang="es" href="https://estocastic.xyz/community/yin-gathering/"/><xhtml:link rel="alternate" hreflang="en" href="https://estocastic.xyz/en/community/yin-gathering/"/></url>
 </urlset>
