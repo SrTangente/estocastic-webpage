@@ -355,11 +355,9 @@ def label_page(L, covers, radio):
     items = ""
     for r in sorted(RELEASES, key=lambda r: r.get("date") or "", reverse=True):
         c = covers.get(r["id"])
-        num = f'{r["series"].upper()} {r["num"]}'.strip() if r.get("num") else r["series"].upper()
-        sub = f'{num}' + (f' · {r["date"][:4]}' if r.get("date") else "")
         img = f'<img src="{c}"{rimg(c, SZ_CARD)} alt="{esc(r["title"])}" loading="lazy">' if c else f'<div class="fallback"><b>{esc(r["title"])}</b></div>'
         items += (f'<a class="rel" href="{esc(r["url"])}" target="_blank" rel="noopener"><div class="art brk">{img}</div>'
-                  f'<div class="cap"><span>{esc(r["title"])}</span><span>{esc(sub)}</span></div></a>')
+                  f'<div class="cap"><span>{esc(r["title"])}</span></div></a>')
     rad = "".join(
         f'<a class="vid" href="{esc(x["url"])}" target="_blank" rel="noopener"><div class="art">'
         + (f'<img src="{radio[x["thumb"]]}"{rimg(radio[x["thumb"]], SZ_CARD)} alt="{esc(x["title"])}" loading="lazy">' if radio.get(x["thumb"]) else "")
