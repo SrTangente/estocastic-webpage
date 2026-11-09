@@ -183,6 +183,17 @@ def make_artist_og(slug):
         im.save(ensure(dest), "JPEG", quality=86, optimize=True, progressive=True)
     return f"/media/og/{slug}.jpg"
 
+def make_icons():
+    """Iconos opacos con el fondo oscuro de la web (los PNG transparentes se ven pálidos sobre blanco al compartir)."""
+    sym = Image.open(ROOT / "symbol.png").convert("RGBA")
+    for name, size in (("favicon.png", 192), ("apple-touch-icon.png", 180), ("icon-512.png", 512)):
+        dest = ROOT / name
+        if all(newer(dest, f) for f in (ROOT / "symbol.png", ROOT / "build.py")): continue
+        im = Image.new("RGB", (size, size), (10, 10, 13))
+        t = sym.copy(); t.thumbnail((round(size * .72), round(size * .72)), Image.LANCZOS)
+        im.paste(t, ((size - t.width) // 2, (size - t.height) // 2), t)
+        im.save(dest, "PNG", optimize=True)
+
 def make_symbol_small():
     """symbol-s.png (480 px de ancho) para pantallas donde el símbolo se muestra a ~150-210 px."""
     dest = ROOT / "symbol-s.png"
@@ -239,7 +250,7 @@ def page(L, title, desc, body, rel, noindex=False, og_image="/og.jpg", ld=None):
 <html lang="{t['html']}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><meta name="theme-color" content="#0a0a0d">
-{robots}{alts}{og}{jsonld(ld, noindex)}<link rel="icon" type="image/png" href="/favicon.png">
+{robots}{alts}{og}{jsonld(ld, noindex)}<link rel="icon" type="image/png" sizes="192x192" href="/favicon.png{ogv("/favicon.png")}"><link rel="apple-touch-icon" href="/apple-touch-icon.png{ogv("/apple-touch-icon.png")}">
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/syne-latin.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="/assets/fonts/jetbrains-mono-latin.woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts.css?v={av("fonts.css")}"><link rel="stylesheet" href="/assets/style.css?v={av("style.css")}">
 </head><body>
@@ -543,7 +554,7 @@ def main():
 
     def write(L, rel, content):
         ensure(ROOT / (pre(L).strip("/") or ".") / rel.strip("/") / "index.html").write_text(content, encoding="utf-8")
-    make_og(); make_symbol_small()
+    make_og(); make_icons(); make_symbol_small()
     for L in LANGS:
         write(L, "", home_page(L, counts))
         write(L, "linktree", links_page(L))
