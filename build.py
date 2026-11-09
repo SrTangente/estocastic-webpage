@@ -58,7 +58,7 @@ T = {
    fine="Responsable: {ctl}. Finalidad: enviarte la newsletter y darte acceso a las fotos. Legitimación: tu consentimiento. Derechos de acceso, rectificación y supresión (y baja): {c}.",
    close="Cerrar ✕", prev="Anterior", next="Siguiente", dl="Descargar ↓", viewer="Visor de fotos", route="Ruta", skip="Saltar al contenido", nav_main="Principal", video="Vídeo", links="Enlaces", events="Eventos",
    m_email="Revisa el correo.", m_consent="Debes aceptar para continuar.", m_na="Formulario no disponible ahora mismo.", m_fail="No se ha podido enviar. Inténtalo de nuevo.",
-   symbol="Símbolo de esτocasτic", home_title="esτocasτic — Colectivo de música electrónica · Barcelona", home_desc="Colectivo y label de música electrónica en Barcelona. Mixes, radio, artistas y fiestas. Let waveforms collapse.", home_sub_photos="Fotos de las fiestas",
+   symbol="Símbolo de esτocasτic", home_title="esτocasτic", home_desc="Colectivo y label de música electrónica en Barcelona. Mixes, radio, artistas y fiestas. Let waveforms collapse.", home_sub_photos="Fotos de las fiestas",
    subs=dict(radio="Mixes · Vídeo", about="Manifiesto", shop="Pronto", agency="Artistas", events="Carteles · Fiestas", community="Fotos · Vídeo")),
  "en": dict(html="en", menu="Menu",
    events_kicker="Events · Eventos — 05", events_intro="", events_desc="esτocasτic party posters and photos.",
@@ -78,7 +78,7 @@ T = {
    fine="Controller: {ctl}. Purpose: sending you the newsletter and giving you access to the photos. Legal basis: your consent. Rights of access, rectification and erasure (and unsubscribing): {c}.",
    close="Close ✕", prev="Previous", next="Next", dl="Download ↓", viewer="Photo viewer", route="Breadcrumb", skip="Skip to content", nav_main="Main", video="Video", links="Links", events="Events",
    m_email="Check your email address.", m_consent="You need to accept to continue.", m_na="The form is not available right now.", m_fail="Could not send. Please try again.",
-   symbol="esτocasτic symbol", home_title="esτocasτic — Electronic music collective · Barcelona", home_desc="Electronic music collective and label in Barcelona. Mixes, radio, artists and parties. Let waveforms collapse.", home_sub_photos="Party photos",
+   symbol="esτocasτic symbol", home_title="esτocasτic", home_desc="Electronic music collective and label in Barcelona. Mixes, radio, artists and parties. Let waveforms collapse.", home_sub_photos="Party photos",
    subs=dict(radio="Mixes · Video", about="Manifesto", shop="Soon", agency="Artists", events="Posters · Parties", community="Photos · Video")),
 }
 ARIA_PAGE, ARIA_TRUE, BLANK = ' aria-current="page"', ' aria-current="true"', ' target="_blank" rel="noopener"'  # (compat. Python < 3.12)
