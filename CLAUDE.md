@@ -13,19 +13,19 @@ Idioma de trabajo con el dueño (Sewa): español, mensajes cortos y directos.
 - Secretos: nunca guardar tokens en el repo ni pegarlos en mensajes de commit.
 
 ## Secciones (menú, en este orden)
-LABEL · ABOUT · SHOP · AGENCY · EVENTS · COMMUNITY, más `/linktree/` (bio de Instagram, sin enlace en el menú) y un enlace "✉ CONTACTO" en la barra.
-- **Label:** releases ordenadas de más nueva a más vieja (campo `date`), más radio (PNC). Portadas en `source/releases/` (hi-res, 1200 px de salida).
+ABOUT · RADIO · EVENTS · COMMUNITY · AGENCY, más (orden: qué es → música → fiestas → fotos → contratar; SHOP entraría entre COMMUNITY y AGENCY) `/linktree/` (bio de Instagram, sin enlace en el menú) y un enlace "✉ CONTACTO" en la barra.
+- **Radio:** mixes (las 11 piezas actuales, de más nueva a más vieja por `date`) y vídeos (shows de PNC). Portadas en `source/releases/` (hi-res, 1200 px de salida). Los vídeos van con una columna menos que los mixes y la misma altura. **Label** (releases) no existe aún: volverá al menú con el primer release. `/label/` redirige a `/radio/`.
 - **About:** solo definición + manifiesto (`content.json`).
-- **Shop:** "pronto" (Instagram como CTA).
+- **Shop:** oculta hasta que haya tienda (`"hidden_sections": ["shop"]` en `site.json`; quitarla de la lista la devuelve al menú, al home y al sitemap). `/shop/` redirige al home.
 - **Agency:** tarjetas solo con el nombre del artista (sin rol). Ficha por artista: bio, retrato 4:5, extras, botones SoundCloud e Instagram (`links`) y mixes (`links_extra`).
 - **Events:** muro de carteles. El cartel de un evento con fotos enlaza a `/community/<slug>/`; los demás se abren en lightbox (zoom al pasar el ratón / clic).
 - **Community:** fotos y vídeo de los eventos que ya tienen (Yin Gathering). Vídeo: `events.json` → `video` (src, crédito); archivo en `media/<slug>/video.mp4`. El aviso de retirada de fotos va **en el pie de página**, no bajo el título.
 
 ## Decisiones tomadas (respetar)
 - Todos los eventos ya han pasado. **Yang Alchemy se canceló: no debe aparecer en ningún sitio** (`"cancelled": true` en `events.json`; no mostrar "cancelado").
-- **Sin subtítulos/introducciones innecesarias** bajo los títulos de página (Label, Agency, Events, Community). Solo lo imprescindible.
+- **Sin subtítulos/introducciones innecesarias** bajo los títulos de página (Radio, Agency, Events, Community). Solo lo imprescindible.
 - Contacto accesible en toda la web (nav + pie). Actualmente `estocastic.sound@gmail.com`; cambiará a `contact@estocastic.xyz` cuando exista el reenvío (cambiar `contact` en `site.json`).
-- Linktree: SoundCloud, Instagram, Contacto y Web (primero). No incluye "Label · Mixes".
+- Linktree: SoundCloud, Instagram, Contacto y Web (primero). No incluye "Radio · Mixes".
 - Fondo generativo `bg.js`: ondas que se aplanan junto al cursor y con ripples al clic; respeta `prefers-reduced-motion`. Color del logo y símbolo por visita: ~50 % el morado original, resto aleatorio; clic en el símbolo cambia de color; se guarda en `sessionStorage`.
 - Imágenes siempre en alta resolución desde los originales (carpetas MIXTAPES, CARTELES, FOTACAS del usuario y la exportación de Instagram), nunca desde el press kit PDF (ahí están comprimidas). Carteles en 5/7 con `object-fit: contain`; retratos de artista 4:5 `cover`.
 - Galería exclusiva de fotos analógicas en `/s/<secret>/` (noindex): oculta hasta que `site.json` tenga `endpoint` (Apps Script, ver `apps_script_correos.gs`) o se construya con `--with-gate`.

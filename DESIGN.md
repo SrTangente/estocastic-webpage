@@ -114,7 +114,7 @@ El sitio se lee como una hoja técnica de estudio, no como una web de marca. Gro
 
 La identidad manda: el símbolo cromado y el logo son el protagonista y su color cambia por visita mediante `--h` (aprox. 50 % el morado original). El resto del sistema se mantiene quieto y mono-cromático (texto crema sobre negro) para que ese color sea lo único vivo. El ámbar `yang` es puntual.
 
-La pieza de esta ronda es el home: el índice es una mesa de mezclas de seis canales, uno por sección (Label, About, Shop, Agency, Events, Community), con fader normal en escritorio y knob giratorio en móvil. Al pasar o enfocar un canal, su nivel sube al máximo y se enciende. Por decisión del dueño los faders son normales (tapa rectangular con marca central), no inventados.
+La pieza de esta ronda es el home: el índice es una mesa de mezclas de cinco canales, uno por sección (About, Radio, Events, Community, Agency), con fader normal en escritorio y knob giratorio en móvil. Al pasar o enfocar un canal, su nivel sube al máximo y se enciende. Por decisión del dueño los faders son normales (tapa rectangular con marca central), no inventados.
 
 **Key Characteristics:**
 - Oscuro, plano, de líneas finas; profundidad por capas tonales, no por sombras.
@@ -180,7 +180,7 @@ Ritmo: huecos de 10-12 px entre elementos tipo panel, 26-34 px entre filas de ta
 - **Cuadrículas con auto-fill:** tarjetas de label (min 230px, aspect 3/4), roster de artistas (min 210px, aspect 4/5), releases (min 190px, 1:1), vídeos (min 250px, 16:9).
 - **Columnas calculadas:** a partir de 701 px, el muro de carteles (`.wall`) usa `--cols` (por defecto 5) con 16 px de hueco, y releases y vídeos usan `--cols` (por defecto 4), para que todas las filas tengan el mismo número de piezas (mínimo 4 en escritorio en Events). Los carteles se muestran 5/7 con `contain`.
 - **Galería de comunidad:** columnas CSS 2 / 3 (700 px) / 4 (1000 px) con 12 px de hueco; miniaturas cuadradas con `cover`, el visor muestra la foto completa.
-- **Home:** seis canales en una fila de seis columnas iguales (hueco 10 px); si la ventana mide 761+ px de ancho y 820 px o menos de alto, el fader baja de 280 a 220 px y el símbolo a 210 px para que quepa en el primer viewport. A 760 px o menos, seis filas de 84 px mínimo con el nombre y la etiqueta a la izquierda y un knob de 64 px a la derecha.
+- **Home:** cinco canales en una fila de seis columnas iguales (hueco 10 px); si la ventana mide 761+ px de ancho y 820 px o menos de alto, el fader baja de 280 a 220 px y el símbolo a 210 px para que quepa en el primer viewport. A 760 px o menos, seis filas de 84 px mínimo con el nombre y la etiqueta a la izquierda y un knob de 64 px a la derecha.
 - **Breakpoints observados:** 420, 520, 620, 700/701, 760/761, 820, 900, 1000 px.
 - **Menú:** a 900 px o menos pasa a un botón MENU que despliega la lista a pantalla completa de ancho con filas de 16 px de relleno vertical.
 

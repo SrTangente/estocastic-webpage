@@ -16,7 +16,7 @@ Público de las fiestas (llega desde Instagram o el linktree, sobre todo en móv
 
 ## Product Purpose
 
-Web del colectivo de música electrónica esτocasτic (Barcelona). Presenta el label (mixes y radio), el manifiesto, el roster de la agencia, los eventos pasados y la comunidad (fotos y vídeo). Éxito: se entiende qué es esτocasτic y se llega rápido a cada sección y al contacto.
+Web del colectivo de música electrónica esτocasτic (Barcelona). Presenta la radio (mixes y vídeos), el manifiesto, el roster de la agencia, los eventos pasados y la comunidad (fotos y vídeo). Éxito: se entiende qué es esτocasτic y se llega rápido a cada sección y al contacto.
 
 ## Positioning
 
@@ -28,7 +28,7 @@ Fondo generativo de ondas que se aplanan junto al cursor; color del logo y del s
 
 ## Capabilities and Constraints
 
-- Secciones, en orden: LABEL, ABOUT, SHOP ("pronto"), AGENCY, EVENTS, COMMUNITY; enlaces externos a SoundCloud e Instagram; "✉ CONTACTO" visible en toda la web.
+- Secciones, en orden: ABOUT, RADIO, EVENTS, COMMUNITY, AGENCY (SHOP y LABEL ocultas hasta que tengan contenido); enlaces externos a SoundCloud e Instagram; "✉ CONTACTO" visible en toda la web.
 - Todos los eventos han pasado; no hay próximo evento que anunciar. Yang Alchemy se canceló y no debe aparecer.
 - Sin subtítulos ni introducciones innecesarias bajo los títulos de página.
 - Imágenes siempre en alta resolución desde los originales, nunca del press kit PDF.

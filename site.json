@@ -4,5 +4,8 @@
   "contact": "estocastic.sound@gmail.com",
   "controller": "Asociación esτocasτic",
   "endpoint": "",
-  "secret": "k7x92qfm4t"
+  "secret": "k7x92qfm4t",
+  "hidden_sections": [
+    "shop"
+  ]
 }

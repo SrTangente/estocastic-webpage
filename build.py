@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Genera estocastic.xyz (ES en /, EN en /en/).
 
-Secciones: LABEL · ABOUT · SHOP · AGENCY · COMMUNITY.
+Secciones: ABOUT · RADIO · EVENTS · COMMUNITY · (SHOP, oculta) · AGENCY.
 Datos:   site.json, events.json, artists.json, releases.json, content.json
 Fuentes: source/ (no se sube a git):
    source/<evento>/*.jpg            fotos del evento       -> /community/<evento>/
@@ -13,7 +13,7 @@ Fuentes: source/ (no se sube a git):
    source/about/group.jpg           foto de grupo
 Uso: python3 build.py
 """
-import base64, html, json, sys
+import base64, html, json, re, sys
 from pathlib import Path
 from PIL import Image, ImageOps
 
@@ -35,15 +35,17 @@ EXTS = {".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff"}
 MB = SITE.get("media_base", "").rstrip("/")  # "" = mismo dominio; luego "https://media.estocastic.xyz"
 esc = html.escape
 LANGS = ("es", "en")
-SECTIONS = ["label", "about", "shop", "agency", "events", "community"]
+SECTIONS_ALL = ["about", "radio", "events", "community", "shop", "agency"]
+HIDDEN = set(SITE.get("hidden_sections", []))                     # secciones sin contenido todavía (site.json)
+SECTIONS = [x for x in SECTIONS_ALL if x not in HIDDEN]           # las que salen en el menú, el home y el sitemap
 
 T = {
  "es": dict(html="es", menu="Menú",
    events_kicker="Eventos · Events — 05", events_intro="", events_desc="Carteles y fotos de las fiestas de esτocasτic.",
    community_kicker="Comunidad · Community — 06", community_intro="",
    community_desc="Fotos y vídeo de las fiestas de esτocasτic.", takedown="Si apareces en alguna foto y prefieres que la quitemos, escríbenos a {c}.", photos_h="Fotos", events_h="Eventos", fiestas_alt="Cartel de fiesta esτocasτic",
-   label_kicker="Label — 01", label_intro="", label_desc="Mixes y radio de esτocasτic.",
-   mixes_h="Mixes", radio_h="Radio", listen="Escuchar", watch="Ver",
+   radio_kicker="Radio — 01", radio_intro="", radio_desc="Mixes y vídeos de esτocasτic.",
+   mixes_h="Mixes", radio_h="Vídeo", listen="Escuchar", watch="Ver",
    about_kicker="About — 02", about_desc="Manifiesto de esτocasτic.", manifesto_h="Manifiesto", parties_h="Fiestas", contact_h="Contacto",
    shop_kicker="Shop — 03", shop_desc="Tienda de esτocasτic.", shop_h="Pronto", shop_text="Estamos preparando la tienda. Síguenos para enterarte cuando abra.", shop_cta="Avisadme →",
    agency_kicker="Agency — 04", agency_intro="", agency_desc="Artistas de esτocasτic.",
@@ -57,13 +59,13 @@ T = {
    close="Cerrar ✕", prev="Anterior", next="Siguiente", dl="Descargar ↓", viewer="Visor de fotos", route="Ruta", skip="Saltar al contenido", nav_main="Principal", video="Vídeo", links="Enlaces", events="Eventos",
    m_email="Revisa el correo.", m_consent="Debes aceptar para continuar.", m_na="Formulario no disponible ahora mismo.", m_fail="No se ha podido enviar. Inténtalo de nuevo.",
    symbol="Símbolo de esτocasτic", home_title="esτocasτic — Colectivo de música electrónica · Barcelona", home_desc="Colectivo y label de música electrónica en Barcelona. Mixes, radio, artistas y fiestas. Let waveforms collapse.", home_sub_photos="Fotos de las fiestas",
-   subs=dict(label="Mixes · Radio", about="Manifiesto", shop="Pronto", agency="Artistas", events="Carteles · Fiestas", community="Fotos · Vídeo")),
+   subs=dict(radio="Mixes · Vídeo", about="Manifiesto", shop="Pronto", agency="Artistas", events="Carteles · Fiestas", community="Fotos · Vídeo")),
  "en": dict(html="en", menu="Menu",
    events_kicker="Events · Eventos — 05", events_intro="", events_desc="esτocasτic party posters and photos.",
    community_kicker="Community · Comunidad — 06", community_intro="",
    community_desc="Photos and video from esτocasτic parties.", takedown="If you appear in a photo and would rather we take it down, write to {c}.", photos_h="Photos", events_h="Events", fiestas_alt="esτocasτic party poster",
-   label_kicker="Label — 01", label_intro="", label_desc="esτocasτic mixes and radio.",
-   mixes_h="Mixes", radio_h="Radio", listen="Listen", watch="Watch",
+   radio_kicker="Radio — 01", radio_intro="", radio_desc="esτocasτic mixes and videos.",
+   mixes_h="Mixes", radio_h="Video", listen="Listen", watch="Watch",
    about_kicker="About — 02", about_desc="esτocasτic manifesto.", manifesto_h="Manifesto", parties_h="Parties", contact_h="Contact",
    shop_kicker="Shop — 03", shop_desc="esτocasτic shop.", shop_h="Soon", shop_text="We're preparing the shop. Follow us to know when it opens.", shop_cta="Notify me →",
    agency_kicker="Agency — 04", agency_intro="", agency_desc="esτocasτic artists.",
@@ -77,7 +79,7 @@ T = {
    close="Close ✕", prev="Previous", next="Next", dl="Download ↓", viewer="Photo viewer", route="Breadcrumb", skip="Skip to content", nav_main="Main", video="Video", links="Links", events="Events",
    m_email="Check your email address.", m_consent="You need to accept to continue.", m_na="The form is not available right now.", m_fail="Could not send. Please try again.",
    symbol="esτocasτic symbol", home_title="esτocasτic — Electronic music collective · Barcelona", home_desc="Electronic music collective and label in Barcelona. Mixes, radio, artists and parties. Let waveforms collapse.", home_sub_photos="Party photos",
-   subs=dict(label="Mixes · Radio", about="Manifesto", shop="Soon", agency="Artists", events="Posters · Parties", community="Photos · Video")),
+   subs=dict(radio="Mixes · Video", about="Manifesto", shop="Soon", agency="Artists", events="Posters · Parties", community="Photos · Video")),
 }
 ARIA_PAGE, ARIA_TRUE, BLANK = ' aria-current="page"', ' aria-current="true"', ' target="_blank" rel="noopener"'  # (compat. Python < 3.12)
 def pre(L): return "" if L == "es" else "/en"
@@ -261,7 +263,7 @@ def footer(note=""):
 <span class="micro foot-contact"><span>@estocastic_</span><i class="dot">·</i><a href="mailto:{SITE['contact']}">{SITE['contact']}</a></span>
 <span class="micro">BCN · 41.39 N / 2.17 E · REF EST—2026</span></footer></div>'''
 
-SEC_ACC = {"label": "yin", "about": "text", "shop": "yang", "agency": "yin", "events": "yang", "community": "yang"}
+SEC_ACC = {"radio": "yin", "about": "text", "shop": "yang", "agency": "yin", "events": "yang", "community": "yang"}
 def strip(sec):
     i = SECTIONS.index(sec) + 1
     return (f'<div class="strip" aria-hidden="true"><span>EST—2026</span><span>{sec.upper()}/{i:02d}</span>'
@@ -270,6 +272,7 @@ def strip(sec):
 def head(kicker, title, intro="", extra="", sec=""):
     p = f"<p>{intro}</p>" if intro else ""
     st = strip(sec) if sec else ""
+    if sec: kicker = re.sub(r" — \d+$", f" — {SECTIONS.index(sec) + 1:02d}", kicker)
     acc = f' style="--acc:var(--{SEC_ACC[sec]})"' if sec else ""
     return f'<header class="page-head"{acc}>{st}<span class="micro">{kicker}</span><h1>{title}</h1>{p}{extra}</header>'
 
@@ -381,8 +384,8 @@ def events_page(L, public, counts, fiestas):
 {wall}</main>{footer()}{lightbox(L) if plain else ""}'''
     return page(L, "Events · esτocasτic", t["events_desc"], body, "/events/")
 
-# ---------- LABEL ----------
-def label_page(L, covers, radio):
+# ---------- RADIO ----------
+def radio_page(L, covers, radio):
     t = T[L]
     items = ""
     for r in sorted(RELEASES, key=lambda r: r.get("date") or "", reverse=True):
@@ -395,12 +398,13 @@ def label_page(L, covers, radio):
         + (f'<img src="{radio[x["thumb"]]}"{rimg(radio[x["thumb"]], SZ_CARD)} alt="{esc(x["title"])}" loading="lazy">' if radio.get(x["thumb"]) else "")
         + f'<span class="play">▶</span></div><div class="cap"><span>{esc(x["title"])}</span><span>pnc radio ↗</span></div></a>'
         for x in CONTENT.get("radio", []))
-    body = f'''{topbar(L, "/label/", "label")}<main id="main" class="wrap">
-{head(t['label_kicker'], "Label", t['label_intro'], sec="label")}
-<section class="sec"><h2 class="sec-h">{t['mixes_h']}</h2><div class="rels" style="--cols:{wall_cols(len(RELEASES))}">{items}</div></section>
-{f'<section class="sec"><h2 class="sec-h">{t["radio_h"]}</h2><div class="vids" style="--cols:{wall_cols(len(RELEASES))}">{rad}</div></section>' if rad else ""}
+    cols = wall_cols(len(RELEASES))
+    body = f'''{topbar(L, "/radio/", "radio")}<main id="main" class="wrap">
+{head(t['radio_kicker'], "Radio", t['radio_intro'], sec="radio")}
+<section class="sec cq"><h2 class="sec-h">{t['mixes_h']}</h2><div class="rels" style="--cols:{cols}">{items}</div></section>
+{f'<section class="sec cq"><h2 class="sec-h">{t["radio_h"]}</h2><div class="vids" style="--cols:{cols};--vcols:{max(2, cols - 1)}">{rad}</div></section>' if rad else ""}
 </main>{footer()}'''
-    return page(L, "Label · esτocasτic", t["label_desc"], body, "/label/")
+    return page(L, "Radio · esτocasτic", t["radio_desc"], body, "/radio/")
 
 # ---------- ABOUT ----------
 def about_page(L, group):
@@ -488,7 +492,7 @@ def home_page(L, counts):
            f'<a href="https://www.instagram.com/estocastic_/"{BLANK}>Instagram ↗</a>')
     body = f'''{topbar(L, "/")}<main id="main" class="wrap home">
 <header class="hero"><img class="mark" src="/symbol.png" srcset="/symbol-s.png 480w, /symbol.png 800w" sizes="(max-width:480px) 52vw, 300px" width="800" height="595" alt="{t['symbol']}"><h1><img class="logo" src="/logo.png" alt="esτocasτic"></h1></header>
-<nav class="desk brk" aria-label="{t['links']}">{chans}</nav>
+<nav class="desk brk" style="--n:{len(SECTIONS)}" aria-label="{t['links']}">{chans}</nav>
 <p class="ext micro">{ext}</p></main>{footer()}'''
     return page(L, t["home_title"], t["home_desc"], body, "/", ld=org_ld())
 
@@ -515,6 +519,13 @@ def links_page(L):
     return page(L, "esτocasτic · Links", t["home_desc"], body, "/linktree/")
 
 # ---------- main ----------
+def redirect_page(L, target):
+    """Página mínima que lleva a `target` (para direcciones que ya no existen)."""
+    url = f"{SITE['domain']}{pre(L)}{target}"
+    return (f'<!doctype html><html lang="{L}"><meta charset="utf-8"><title>esτocasτic</title>'
+            f'<meta name="robots" content="noindex"><link rel="canonical" href="{url}">'
+            f'<meta http-equiv="refresh" content="0; url={pre(L)}{target}"><a href="{pre(L)}{target}">{pre(L)}{target}</a></html>')
+
 def main():
     if SITE.get("secret") in (None, "", "CHANGE_ME"): sys.exit("site.json: falta 'secret'")
     events = sorted(EVENTS, key=lambda e: e["date"], reverse=True)
@@ -536,9 +547,10 @@ def main():
     for L in LANGS:
         write(L, "", home_page(L, counts))
         write(L, "linktree", links_page(L))
-        write(L, "label", label_page(L, covers, radio))
+        write(L, "radio", radio_page(L, covers, radio))
+        write(L, "label", redirect_page(L, "/radio/"))
         write(L, "about", about_page(L, group))
-        write(L, "shop", shop_page(L))
+        write(L, "shop", shop_page(L) if "shop" in SECTIONS else redirect_page(L, "/"))
         write(L, "agency", agency_page(L, aph))
         for a in ARTISTS: write(L, f"agency/{a['slug']}", artist_page(L, a, aph[a["slug"]]))
         write(L, "events", events_page(L, public, counts, fiestas))
