@@ -156,15 +156,30 @@ def code(ev): return ev["slug"].upper().replace("-", "·")
 
 # ---------- imagen para compartir (og.jpg) ----------
 def make_og():
-    """1200x630: símbolo + logo sobre el fondo de la web. Se regenera solo si cambian symbol.png/logo.png."""
+    """1200x630: símbolo + logo sobre el fondo de la web. Todo cabe en el cuadrado central de 630 px
+    (WhatsApp, Telegram e iMessage recortan a cuadrado). Se regenera si cambia build.py, symbol.png o logo.png."""
     dest = ROOT / "og.jpg"
-    if newer(dest, ROOT / "symbol.png") and newer(dest, ROOT / "logo.png"): return
+    if all(newer(dest, f) for f in (ROOT / "symbol.png", ROOT / "logo.png", ROOT / "build.py")): return
     im = Image.new("RGB", (1200, 630), (10, 10, 13))
-    sym = Image.open(ROOT / "symbol.png").convert("RGBA"); sym.thumbnail((520, 340), Image.LANCZOS)
-    logo = Image.open(ROOT / "logo.png").convert("RGBA"); logo.thumbnail((760, 200), Image.LANCZOS)
-    im.paste(sym, ((1200 - sym.width) // 2, 70), sym)
-    im.paste(logo, ((1200 - logo.width) // 2, 70 + sym.height + 50), logo)
+    sym = Image.open(ROOT / "symbol.png").convert("RGBA"); sym.thumbnail((400, 290), Image.LANCZOS)
+    logo = Image.open(ROOT / "logo.png").convert("RGBA"); logo.thumbnail((540, 100), Image.LANCZOS)
+    gap = 44; top = (630 - (sym.height + gap + logo.height)) // 2
+    im.paste(sym, ((1200 - sym.width) // 2, top), sym)
+    im.paste(logo, ((1200 - logo.width) // 2, top + sym.height + gap), logo)
     im.save(dest, "JPEG", quality=88, optimize=True, progressive=True)
+
+def make_artist_og(slug):
+    """1200x630 para la ficha de un artista: retrato 4:5 centrado sobre el fondo oscuro (a prueba de recorte cuadrado)."""
+    src = ROOT / "media" / "artists" / f"{slug}.jpg"
+    dest = ROOT / "media" / "og" / f"{slug}.jpg"
+    if not src.exists(): return None
+    if not (newer(dest, src) and newer(dest, ROOT / "build.py")):
+        im = Image.new("RGB", (1200, 630), (10, 10, 13))
+        with Image.open(src) as ph:
+            ph = ImageOps.fit(ph.convert("RGB"), (504, 630), Image.LANCZOS, centering=(0.5, 0.35))
+        im.paste(ph, (348, 0))
+        im.save(ensure(dest), "JPEG", quality=86, optimize=True, progressive=True)
+    return f"/media/og/{slug}.jpg"
 
 def make_symbol_small():
     """symbol-s.png (480 px de ancho) para pantallas donde el símbolo se muestra a ~150-210 px."""
@@ -204,6 +219,11 @@ def event_ld(L, ev, photos):
     return d
 
 # ---------- layout ----------
+def ogv(path):
+    """?v=<hash> para que WhatsApp, Instagram y compañía no sigan mostrando una miniatura vieja en caché."""
+    f = ROOT / path.lstrip("/")
+    return "?v=" + hashlib.md5(f.read_bytes()).hexdigest()[:8] if f.exists() else ""
+
 def page(L, title, desc, body, rel, noindex=False, og_image="/og.jpg", ld=None):
     t = T[L]; url = SITE["domain"] + pre(L) + rel
     alts = "" if noindex else "".join(f'<link rel="alternate" hreflang="{l}" href="{SITE["domain"]}{pre(l)}{rel}">' for l in LANGS) \
@@ -211,7 +231,7 @@ def page(L, title, desc, body, rel, noindex=False, og_image="/og.jpg", ld=None):
     robots = '<meta name="robots" content="noindex,nofollow">' if noindex else ""
     og = "" if noindex else f'''<meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}">
-<meta property="og:image" content="{SITE['domain']}{og_image}"><meta name="twitter:card" content="{"summary_large_image" if og_image == "/og.jpg" else "summary"}">'''
+<meta property="og:image" content="{SITE['domain']}{og_image}{ogv(og_image)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{esc(title)}"><meta name="twitter:card" content="summary_large_image">'''
     cfg = json.dumps({"endpoint": SITE.get("endpoint", ""), "m": {k[2:]: t[k] for k in t if k.startswith("m_")}})
     return f'''<!doctype html>
 <html lang="{t['html']}"><head><meta charset="utf-8">
@@ -392,7 +412,7 @@ def about_page(L, group):
 <section class="defn brk"><b>{esc(loc(a, "term", L))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></section>
 <section class="sec prose"><h2 class="sec-h">{t['manifesto_h']}</h2>{man}</section>
 </main>{footer()}'''
-    return page(L, "About · esτocasτic", t["about_desc"], body, "/about/", og_image="/symbol.png")
+    return page(L, "About · esτocasτic", t["about_desc"], body, "/about/")
 
 # ---------- SHOP ----------
 def shop_page(L):
@@ -446,7 +466,7 @@ def artist_page(L, a, photo):
 <article class="aview">{img}<div class="atext"><span class="micro">{esc(loc(a, "role", L))}</span>
 <h1>{name}</h1>{bio}<div class="alinks">{book}{links}</div></div></article>{extras}</main>{footer()}{lightbox(L) if ex else ""}'''
     d = str(loc(a, "bio", L)).split("\n")[0][:150]
-    return page(L, f"{a['name']} · esτocasτic", d or t["agency_desc"], body, rel, og_image=(photo if photo and not MB else "/og.jpg"), ld=artist_ld(L, a, photo))
+    return page(L, f"{a['name']} · esτocasτic", d or t["agency_desc"], body, rel, og_image=(make_artist_og(a["slug"]) or "/og.jpg"), ld=artist_ld(L, a, photo))
 
 def agency_page(L, photos):
     t = T[L]
