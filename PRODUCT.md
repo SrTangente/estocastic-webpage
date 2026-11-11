@@ -37,7 +37,7 @@ Fondo generativo de ondas que se aplanan junto al cursor; color del logo y del s
 
 ## Brand Commitments
 
-Logo, símbolo cromado, fondo oscuro con ondas, color variable del logo (morado original como base) y la tipografía propia actual quedan como base de la identidad: este rediseño del home los mantiene.
+Logo, símbolo cromado (da una vuelta y cambia de color al hacer clic; en About hay una versión vectorial girando en 3D), fondo oscuro con ondas, color variable del logo (morado original como base) y la tipografía propia actual quedan como base de la identidad: este rediseño del home los mantiene.
 
 ## Evidence on Hand
 

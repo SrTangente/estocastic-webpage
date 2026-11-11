@@ -424,7 +424,7 @@ def about_page(L, group):
     img = f'<figure class="group brk"><img src="{group}"{dims(group)} alt="esτocasτic &amp; friends" loading="lazy"></figure>' if group else ""
     body = f'''{topbar(L, "/about/", "about")}<main id="main" class="wrap">
 {head(t['about_kicker'], "About", sec="about")}
-<section class="defn brk"><b>{esc(loc(a, "term", L))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></section>
+<section class="defn brk"><div class="defn-t"><b>{esc(loc(a, "term", L))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></div>{symbol_vector(t['symbol'])}</section>
 <section class="sec prose"><h2 class="sec-h">{t['manifesto_h']}</h2>{man}</section>
 </main>{footer()}'''
     return page(L, "About · esτocasτic", t["about_desc"], body, "/about/")
@@ -492,6 +492,25 @@ def agency_page(L, photos):
     return page(L, "Agency · esτocasτic", t["agency_desc"], body, "/agency/")
 
 # ---------- HOME ----------
+def symbol_vector(alt, n=14):
+    """Símbolo en vectorial (symbol.svg) como sólido que gira: n capas SVG apiladas en profundidad (CSS 3D).
+    Las dos caras (capas 0 y n-1) llevan degradado; las intermedias, el color del canto. Mantiene la clase
+    .mark para el color variable por visita y el clic de bg.js."""
+    svg = (ROOT / "symbol.svg").read_text()
+    d = re.search(r' d="([^"]+)"', svg).group(1)
+    w, h = re.search(r'viewBox="0 0 (\d+) (\d+)"', svg).groups()
+    mid = (n - 1) / 2
+    layers = "".join(
+        f'<svg class="{"f" if i in (0, n - 1) else "s"}" viewBox="0 0 {w} {h}" '
+        f'style="--z:{i - mid:g};--e:{abs(i - mid) / mid:.2f}" aria-hidden="true" focusable="false"><use href="#m3p"/></svg>'
+        for i in range(n))
+    return (f'<div class="mark m3" role="img" aria-label="{alt}" style="--r:{int(w)}/{int(h)}">'
+            f'<svg class="m3-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><path id="m3p" d="{d}"/>'
+            f'<linearGradient id="m3g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4eaff"/>'
+            f'<stop offset=".55" stop-color="#c7a6ff"/><stop offset="1" stop-color="#8d60ee"/></linearGradient></defs></svg>'
+            f'<div class="m3-stage"><div class="m3-tilt"><div class="m3-spin">{layers}</div></div></div></div>')
+
+
 def home_page(L, counts):
     t = T[L]
     chans = "".join(

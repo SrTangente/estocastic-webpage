@@ -10,7 +10,16 @@
   /* clic en el símbolo: siguiente color */
   document.addEventListener('click',function(e){
     var m=e.target.closest&&e.target.closest('.mark');
-    if(m){setH(h+47+Math.random()*60)}
+    if(m){
+      setH(h+47+Math.random()*60);
+      /* además del color, el símbolo da una vuelta (el vectorial de About ya gira solo) */
+      if(!reduce&&!m.classList.contains('m3')&&!m.classList.contains('spin')){
+        m.classList.add('spin');
+        var done=function(){m.classList.remove('spin')};
+        m.addEventListener('animationend',done,{once:true});
+        setTimeout(done,1100);
+      }
+    }
   });
 
   /* ---------- canvas ---------- */
