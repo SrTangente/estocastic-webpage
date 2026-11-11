@@ -194,6 +194,38 @@ def make_icons():
         im.paste(t, ((size - t.width) // 2, (size - t.height) // 2), t)
         im.save(dest, "PNG", optimize=True)
 
+def make_symbol_figure():
+    """assets/hairline-symbol.js: motor de Hairline (MIT, assets/hairline/LICENSE) + la figura del símbolo (assets/hairline/symbol.js)
+    en un solo script que monta la figura en #hl-symbol y da una vuelta de reclamo al entrar en pantalla."""
+    src = [ROOT / "assets" / "hairline" / n for n in ("kernel.js", "symbol.js")]
+    dest = ROOT / "assets" / "hairline-symbol.js"
+    if all(newer(dest, f) for f in src + [ROOT / "build.py"]): return
+    kernel, fig = (f.read_text() for f in src)
+    dest.write_text("""/* esτocasτic — figura Hairline del símbolo. Generado por build.py desde assets/hairline/ (motor: @lucasmarkes/hairline, MIT). */
+(function(){
+var host=document.getElementById('hl-symbol');
+if(!host)return;
+""" + kernel + """
+var fig=null,tour=null;
+function hairline(f){fig=f}
+""" + fig + """
+if(!fig)return;
+HL.inject(document);
+host.setAttribute('data-hairline',fig.name);
+var svg=HL.mk('svg',{viewBox:'0 0 400 320','aria-hidden':'true'},host);
+fig.mount({stage:host,svg:svg,read:{textContent:''}},fig.range[1]);
+/* una vuelta de reclamo mientras la figura está a la vista, hasta que llega una mano */
+var calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!calm&&'IntersectionObserver' in window){
+  new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting&&!tour)tour=HL.tour(host,fig.tour);
+    else if(!e.isIntersecting&&tour){tour.stop();tour=null}
+  })},{threshold:.6}).observe(host);
+}
+})();
+""")
+
+
 def make_symbol_small():
     """symbol-s.png (480 px de ancho) para pantallas donde el símbolo se muestra a ~150-210 px."""
     dest = ROOT / "symbol-s.png"
@@ -237,7 +269,7 @@ def ogv(path):
     f = ROOT / path.lstrip("/")
     return "?v=" + hashlib.md5(f.read_bytes()).hexdigest()[:8] if f.exists() else ""
 
-def page(L, title, desc, body, rel, noindex=False, og_image="/og.jpg", ld=None):
+def page(L, title, desc, body, rel, noindex=False, og_image="/og.jpg", ld=None, scripts=""):
     t = T[L]; url = SITE["domain"] + pre(L) + rel
     alts = "" if noindex else "".join(f'<link rel="alternate" hreflang="{l}" href="{SITE["domain"]}{pre(l)}{rel}">' for l in LANGS) \
         + f'<link rel="alternate" hreflang="x-default" href="{SITE["domain"]}{rel}">'
@@ -255,7 +287,7 @@ def page(L, title, desc, body, rel, noindex=False, og_image="/og.jpg", ld=None):
 <link rel="stylesheet" href="/assets/fonts.css?v={av("fonts.css")}"><link rel="stylesheet" href="/assets/style.css?v={av("style.css")}">
 </head><body>
 {body}
-<script>window.EST={cfg};</script><script src="/assets/app.js?v={av("app.js")}" defer></script><script src="/assets/bg.js?v={av("bg.js")}" defer></script>
+<script>window.EST={cfg};</script><script src="/assets/app.js?v={av("app.js")}" defer></script><script src="/assets/bg.js?v={av("bg.js")}" defer></script>{scripts}
 </body></html>'''
 
 def topbar(L, rel, section=None):
@@ -424,10 +456,12 @@ def about_page(L, group):
     img = f'<figure class="group brk"><img src="{group}"{dims(group)} alt="esτocasτic &amp; friends" loading="lazy"></figure>' if group else ""
     body = f'''{topbar(L, "/about/", "about")}<main id="main" class="wrap">
 {head(t['about_kicker'], "About", sec="about")}
-<section class="defn brk"><div class="defn-t"><b>{esc(loc(a, "term", L))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></div>{symbol_vector(t['symbol'])}</section>
-<section class="sec prose"><h2 class="sec-h">{t['manifesto_h']}</h2>{man}</section>
+<section class="defn brk"><b>{esc(loc(a, "term", L))}</b><i>{esc(loc(a, "etym", L))}</i><span>{esc(loc(a, "def", L))}</span></section>
+<div class="about-cols"><section class="sec prose"><h2 class="sec-h">{t['manifesto_h']}</h2>{man}</section>
+<aside class="hl-fig brk"><div id="hl-symbol" class="hl-stage" role="img" aria-label="{t['symbol']}"></div></aside></div>
 </main>{footer()}'''
-    return page(L, "About · esτocasτic", t["about_desc"], body, "/about/")
+    return page(L, "About · esτocasτic", t["about_desc"], body, "/about/",
+                scripts=f'<script src="/assets/hairline-symbol.js?v={av("hairline-symbol.js")}" defer></script>')
 
 # ---------- SHOP ----------
 def shop_page(L):
@@ -492,25 +526,6 @@ def agency_page(L, photos):
     return page(L, "Agency · esτocasτic", t["agency_desc"], body, "/agency/")
 
 # ---------- HOME ----------
-def symbol_vector(alt, n=14):
-    """Símbolo en vectorial (symbol.svg) como sólido que gira: n capas SVG apiladas en profundidad (CSS 3D).
-    Las dos caras (capas 0 y n-1) llevan degradado; las intermedias, el color del canto. Mantiene la clase
-    .mark para el color variable por visita y el clic de bg.js."""
-    svg = (ROOT / "symbol.svg").read_text()
-    d = re.search(r' d="([^"]+)"', svg).group(1)
-    w, h = re.search(r'viewBox="0 0 (\d+) (\d+)"', svg).groups()
-    mid = (n - 1) / 2
-    layers = "".join(
-        f'<svg class="{"f" if i in (0, n - 1) else "s"}" viewBox="0 0 {w} {h}" '
-        f'style="--z:{i - mid:g};--e:{abs(i - mid) / mid:.2f}" aria-hidden="true" focusable="false"><use href="#m3p"/></svg>'
-        for i in range(n))
-    return (f'<div class="mark m3" role="img" aria-label="{alt}" style="--r:{int(w)}/{int(h)}">'
-            f'<svg class="m3-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><path id="m3p" d="{d}"/>'
-            f'<linearGradient id="m3g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4eaff"/>'
-            f'<stop offset=".55" stop-color="#c7a6ff"/><stop offset="1" stop-color="#8d60ee"/></linearGradient></defs></svg>'
-            f'<div class="m3-stage"><div class="m3-tilt"><div class="m3-spin">{layers}</div></div></div></div>')
-
-
 def home_page(L, counts):
     t = T[L]
     chans = "".join(
@@ -573,7 +588,7 @@ def main():
 
     def write(L, rel, content):
         ensure(ROOT / (pre(L).strip("/") or ".") / rel.strip("/") / "index.html").write_text(content, encoding="utf-8")
-    make_og(); make_icons(); make_symbol_small()
+    make_og(); make_icons(); make_symbol_small(); make_symbol_figure()
     for L in LANGS:
         write(L, "", home_page(L, counts))
         write(L, "linktree", links_page(L))
