@@ -81,7 +81,7 @@
       var moving=false;
       for(var n=0;n<chs.length;n++){
         var d=tgt[n]-cur[n];
-        if(Math.abs(d)>.002){cur[n]+=d*.09;moving=true;paint(n)}
+        if(Math.abs(d)>.002){cur[n]+=d*.13;moving=true;paint(n)}
         else if(cur[n]!==tgt[n]){cur[n]=tgt[n];paint(n)}
       }
       raf=moving?requestAnimationFrame(tick):0;
@@ -99,11 +99,18 @@
       c.addEventListener('focus',function(){if(c.matches(':focus-visible'))up()});
       c.addEventListener('blur',down);
     });
+    /* cada 600 ms mueve 1-2 canales a un nivel claramente distinto (salto de .2 a .5) */
+    function drift(n){
+      if(held[n])return;
+      var step=.2+Math.random()*.3,dir=Math.random()<.5?-1:1,v=base[n]+dir*step;
+      if(v>.92||v<.08)v=base[n]-dir*step;
+      base[n]=Math.min(.92,Math.max(.08,v));tgt[n]=base[n];
+    }
     if(!calm)setInterval(function(){
       if(document.hidden)return;
-      var n=Math.floor(Math.random()*chs.length);
-      if(held[n])return;
-      base[n]=Math.min(.85,Math.max(.12,base[n]+(Math.random()-.5)*.3));tgt[n]=base[n];go();
-    },1400);
+      drift(Math.floor(Math.random()*chs.length));
+      if(chs.length>3&&Math.random()<.5)drift(Math.floor(Math.random()*chs.length));
+      go();
+    },600);
   }
 })();
