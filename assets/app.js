@@ -67,17 +67,43 @@
     });
   }
 
-  /* ---------- home: faders en reposo con deriva estocástica ---------- */
+  /* ---------- home: faders y knobs en reposo con deriva estocástica ----------
+     El nivel (--lvl, 0..1) se anima aquí con requestAnimationFrame, no con transiciones CSS,
+     para que fader y knob se muevan igual en cualquier navegador. */
   var chs=[].slice.call(document.querySelectorAll('.ch'));
   if(chs.length){
     var calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var base=[];try{base=JSON.parse(sessionStorage.getItem('est_lv')||'[]')}catch(e){}
     if(base.length!==chs.length){base=chs.map(function(){return +(0.15+Math.random()*0.65).toFixed(2)});try{sessionStorage.setItem('est_lv',JSON.stringify(base))}catch(e){}}
-    chs.forEach(function(c,n){c.style.setProperty('--lvl',base[n])});
+    var cur=base.slice(),tgt=base.slice(),held=chs.map(function(){return false}),raf=0;
+    function paint(n){chs[n].style.setProperty('--lvl',cur[n].toFixed(3))}
+    function tick(){
+      var moving=false;
+      for(var n=0;n<chs.length;n++){
+        var d=tgt[n]-cur[n];
+        if(Math.abs(d)>.002){cur[n]+=d*.09;moving=true;paint(n)}
+        else if(cur[n]!==tgt[n]){cur[n]=tgt[n];paint(n)}
+      }
+      raf=moving?requestAnimationFrame(tick):0;
+    }
+    function go(){
+      if(calm){for(var n=0;n<chs.length;n++){cur[n]=tgt[n];paint(n)}return}
+      if(!raf)raf=requestAnimationFrame(tick);
+    }
+    chs.forEach(function(c,n){
+      paint(n);
+      function up(){held[n]=true;tgt[n]=1;go()}
+      function down(){held[n]=false;tgt[n]=base[n];go()}
+      c.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse'||e.pointerType==='pen')up()});
+      c.addEventListener('pointerleave',function(e){if(e.pointerType==='mouse'||e.pointerType==='pen')down()});
+      c.addEventListener('focus',function(){if(c.matches(':focus-visible'))up()});
+      c.addEventListener('blur',down);
+    });
     if(!calm)setInterval(function(){
-      var c=chs[Math.floor(Math.random()*chs.length)],n=chs.indexOf(c);
-      if(document.hidden||c.matches(':hover,:focus-visible'))return;
-      base[n]=Math.min(.85,Math.max(.12,base[n]+(Math.random()-.5)*.3));c.style.setProperty('--lvl',base[n].toFixed(2));
+      if(document.hidden)return;
+      var n=Math.floor(Math.random()*chs.length);
+      if(held[n])return;
+      base[n]=Math.min(.85,Math.max(.12,base[n]+(Math.random()-.5)*.3));tgt[n]=base[n];go();
     },1400);
   }
 })();
