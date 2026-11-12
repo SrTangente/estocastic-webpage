@@ -196,7 +196,7 @@ def make_icons():
 
 def make_symbol_figure():
     """assets/hairline-symbol.js: motor de Hairline (MIT, assets/hairline/LICENSE) + la figura del símbolo (assets/hairline/symbol.js)
-    en un solo script que monta la figura en #hl-symbol y da una vuelta de reclamo al entrar en pantalla."""
+    en un solo script que monta la figura en #hl-symbol (en pantallas táctiles da una vuelta de reclamo al entrar en pantalla)."""
     src = [ROOT / "assets" / "hairline" / n for n in ("kernel.js", "symbol.js")]
     dest = ROOT / "assets" / "hairline-symbol.js"
     if all(newer(dest, f) for f in src + [ROOT / "build.py"]): return
@@ -214,12 +214,17 @@ HL.inject(document);
 host.setAttribute('data-hairline',fig.name);
 var svg=HL.mk('svg',{viewBox:'0 0 400 320','aria-hidden':'true'},host);
 fig.mount({stage:host,svg:svg,read:{textContent:''}},fig.range[1]);
-/* una vuelta de reclamo mientras la figura está a la vista, hasta que llega una mano */
+/* con ratón la figura aparece girada y solo se alinea al pasar el cursor; en pantallas táctiles (sin hover) da una única vuelta de reclamo al entrar en pantalla */
 var calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-if(!calm&&'IntersectionObserver' in window){
+var touch=window.matchMedia&&matchMedia('(hover: none)').matches;
+var played=false;
+function endTour(){if(tour){tour.stop();tour=null}}
+if(!calm&&touch&&'IntersectionObserver' in window){
   new IntersectionObserver(function(es){es.forEach(function(e){
-    if(e.isIntersecting&&!tour)tour=HL.tour(host,fig.tour);
-    else if(!e.isIntersecting&&tour){tour.stop();tour=null}
+    if(e.isIntersecting&&!tour&&!played){
+      played=true;
+      tour=HL.tour(host,fig.tour,function(i){if(i===fig.tour.length-1)setTimeout(endTour,0)});
+    }else if(!e.isIntersecting)endTour();
   })},{threshold:.6}).observe(host);
 }
 })();

@@ -721,9 +721,9 @@ var fig=null,tour=null;
 function hairline(f){fig=f}
 /**
  * Symbol: the esτocasτic mark as a superposition. Seven sheets of the mark are stacked and turned apart:
- * a whirl of phases under the one upright mark on top, joined by dashed threads. The pointer observes it:
- * every sheet turns upright and the stack closes into one mark, rippling outwards from the layer touched,
- * which goes bright. Leaving lets the waveform spread again from the same layer. The slider is the
+ * the one upright mark at the base and, rising above it, a whirl of phases, joined by dashed threads. The
+ * pointer observes it: every sheet turns upright and the stack settles down onto the mark at the base,
+ * which stays where it is, rippling outwards from the layer touched, which goes bright. Leaving lets the waveform spread again from the same layer. The slider is the
  * stagger, in ms.
  *
  * The pattern: one of many. Two tweens per sheet (its turn and the gap under it), a stagger by distance,
@@ -737,7 +737,7 @@ const BODY = "581,5 585,5 590,5 595,5 600,6 604,7 608,7 611,8 612,9 614,9 616,10
 const DROP = ["252,102 255,102 260,102 263,102 267,103 271,105 274,106 276,109 278,111 279,112 280,113 281,115 281,116 282,119 282,122 281,125 280,128 279,132 277,135 275,138 272,141 268,144 265,147 261,149 257,151 253,153 248,154 244,155 239,156 235,156 232,156 228,155 224,154 221,153 218,151 216,150 214,148 213,147 212,145 211,143 210,142 210,140 210,138 210,136 210,134 210,132 210,130 211,128 212,126 213,124 214,122 216,120 218,118 219,117 221,115 223,113 225,112 227,110 230,108 233,107 235,106 238,105 240,104 244,103 247,102 249,102", "562,434 566,433 570,434 574,434 577,435 579,435 581,436 582,437 584,438 586,440 589,442 590,444 591,445 591,446 592,448 592,450 592,453 592,456 591,460 590,463 588,467 586,470 583,473 580,476 576,478 572,480 568,482 564,484 560,486 556,487 551,487 547,488 543,488 539,487 535,486 532,485 529,483 527,482 526,480 524,479 523,477 522,476 522,474 521,472 520,470 520,468 520,467 521,464 521,462 522,460 523,458 524,456 525,454 527,452 528,450 530,449 532,447 534,445 536,443 538,442 541,440 543,439 546,438 548,437 551,436 556,435"];
 
 const N = 7, TOP = N - 1, GAP = 5, TIGHT = 1.2, T = 2.4, SC = 0.235, S = 1.8;
-const REST = [-112, -88, -66, -47, -30, -14, 0]; // each sheet's turn at rest, bottom to top, in degrees
+const REST = [0, -14, -30, -47, -66, -88, -112]; // each sheet's turn at rest, bottom to top, in degrees: the mark at the base, a whirl rising from it
 const K = Math.SQRT1_2;
 const pts = (s) => s.split(" ").map((q) => q.split(",").map(Number));
 /** A point of the mark on the ground, turned th degrees about its middle, and a quarter of the camera's azimuth so the mark reads upright from it. */
@@ -774,7 +774,7 @@ function mount({ stage, svg, read }, value) {
     sheets.push({ g, lo, sil, tw: tween(REST[i]), gp: tween(GAP), th: REST[i], gap: GAP, z: NaN, drawn: NaN });
   }
 
-  // A sheet's height is the sum of the gaps under it, so the stack can close from any end without two sheets crossing.
+  // The mark at the base never moves: each sheet rests on the one below by its gap, so the stack closes down onto it, and no two sheets cross.
   function draw() {
     let z = 0;
     sheets.forEach((s, i) => {
@@ -800,7 +800,7 @@ function mount({ stage, svg, read }, value) {
   bag.add(B.unregister);
 
   const lit = (a) => sheets.forEach((s, i) => s.sil.classList.toggle("hi", i === a));
-  lit(TOP);
+  lit(0);
 
   // The pick: static bands down the upright mark, which never move, so a sheet turning away cannot change the choice.
   const ys = body.map((q) => P(...world(q, 0), 0)[1]);
@@ -821,7 +821,7 @@ function mount({ stage, svg, read }, value) {
     if (a === act) return;
     const from = a >= 0 ? a : act;
     act = a;
-    lit(a < 0 ? TOP : a);
+    lit(a < 0 ? 0 : a);
     read.textContent = a < 0 ? "rest" : `layer ${a + 1}`;
     apply(from);
   }
@@ -849,12 +849,17 @@ HL.inject(document);
 host.setAttribute('data-hairline',fig.name);
 var svg=HL.mk('svg',{viewBox:'0 0 400 320','aria-hidden':'true'},host);
 fig.mount({stage:host,svg:svg,read:{textContent:''}},fig.range[1]);
-/* una vuelta de reclamo mientras la figura está a la vista, hasta que llega una mano */
+/* con ratón la figura aparece girada y solo se alinea al pasar el cursor; en pantallas táctiles (sin hover) da una única vuelta de reclamo al entrar en pantalla */
 var calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-if(!calm&&'IntersectionObserver' in window){
+var touch=window.matchMedia&&matchMedia('(hover: none)').matches;
+var played=false;
+function endTour(){if(tour){tour.stop();tour=null}}
+if(!calm&&touch&&'IntersectionObserver' in window){
   new IntersectionObserver(function(es){es.forEach(function(e){
-    if(e.isIntersecting&&!tour)tour=HL.tour(host,fig.tour);
-    else if(!e.isIntersecting&&tour){tour.stop();tour=null}
+    if(e.isIntersecting&&!tour&&!played){
+      played=true;
+      tour=HL.tour(host,fig.tour,function(i){if(i===fig.tour.length-1)setTimeout(endTour,0)});
+    }else if(!e.isIntersecting)endTour();
   })},{threshold:.6}).observe(host);
 }
 })();
