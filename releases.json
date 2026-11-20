@@ -95,7 +95,16 @@
     "num": "11",
     "title": "Tangente",
     "date": "2026-10",
-    "url": "https://soundcloud.com/estocastic/estocastic_mix_011_tangente",
+    "url": "https://soundcloud.com/estocastic/elixir-011",
     "cover": "elixir-11"
+  },
+  {
+    "id": "elixir-12",
+    "series": "Elixir",
+    "num": "12",
+    "title": "Tri",
+    "date": "2026-11",
+    "url": "https://soundcloud.com/estocastic/estocastic-elixir-012-tri",
+    "cover": "elixir-12"
   }
 ]

@@ -14,7 +14,7 @@ Idioma de trabajo con el dueño (Sewa): español, mensajes cortos y directos.
 
 ## Secciones (menú, en este orden)
 ABOUT · RADIO · EVENTS · COMMUNITY · AGENCY, más (orden: qué es → música → fiestas → fotos → contratar; SHOP entraría entre COMMUNITY y AGENCY) `/linktree/` (bio de Instagram, sin enlace en el menú) y un enlace "✉ CONTACTO" en la barra.
-- **Radio:** mixes (las 11 piezas actuales, de más nueva a más vieja por `date`) y vídeos (shows de PNC). Portadas en `source/releases/` (hi-res, 1200 px de salida). Los vídeos van con una columna menos que los mixes y la misma altura. **Label** (releases) no existe aún: volverá al menú con el primer release. `/label/` redirige a `/radio/`.
+- **Radio:** mixes (las 12 piezas actuales, de más nueva a más vieja por `date`; para añadir uno: entrada en `releases.json` + portada `source/releases/elixir-NN.jpg`) y vídeos (shows de PNC). Portadas en `source/releases/` (hi-res, 1200 px de salida). Los vídeos van con una columna menos que los mixes y la misma altura. **Label** (releases) no existe aún: volverá al menú con el primer release. `/label/` redirige a `/radio/`.
 - **About:** solo definición + manifiesto (`content.json`).
 - **Shop:** oculta hasta que haya tienda (`"hidden_sections": ["shop"]` en `site.json`; quitarla de la lista la devuelve al menú, al home y al sitemap). `/shop/` redirige al home.
 - **Agency:** tarjetas solo con el nombre del artista (sin rol). Ficha por artista: bio, retrato 4:5, extras, botones SoundCloud e Instagram (`links`) y mixes (`links_extra`).
