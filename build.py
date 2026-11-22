@@ -551,9 +551,9 @@ def links_page(L):
     t = T[L]; rows = ""
     items = list(LINKS)
     mix = max(RELEASES, key=lambda r: r.get("date") or "", default=None)  # el más reciente por fecha, como en Radio
-    if mix:  # primero y destacado: el último mix; el resto, sin destacar
+    if mix:  # el último mix va primero, sin destacar: el botón destacado sigue siendo el de links.json ("primary")
         name = " · ".join(p for p in (f'{mix.get("series", "")} {mix.get("num", "")}'.strip() if mix.get("num") else "", mix["title"]) if p)
-        items = [{"label": t["last_mix"], "url": mix["url"], "sub": name, "primary": True}] + [{**x, "primary": False} for x in items]
+        items = [{"label": t["last_mix"], "url": mix["url"], "sub": name}] + items
     for x in items:
         url = x["url"].replace("{contact}", SITE["contact"])
         local = url.startswith("/")
